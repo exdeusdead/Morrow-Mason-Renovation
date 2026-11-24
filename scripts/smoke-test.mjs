@@ -15,6 +15,12 @@ for (const phrase of ["Morrow &amp; Mason", "Material Lab", "Scope Builder", "Re
 for (const phrase of ["openMenu", "Escape", "localDateString", "updateUrl", "currentFilter", "data-lang"]) {
   if (!js.includes(phrase)) throw new Error(`Missing interaction guard: ${phrase}`);
 }
+for (const phrase of ["scopeInvalidControls", "invalidateScopeSubmission", "aria-invalid", "Update this brief", "Actualizar este brief"]) {
+  if (!js.includes(phrase)) throw new Error(`Missing scope accessibility/state guard: ${phrase}`);
+}
+if (js.includes("s.reset")) throw new Error("Scope actions must not reuse a single reset label");
+if (!css.includes(".eyebrow, .card-kicker, .section-index, .micro-label { color: var(--coral); font-size: .875rem")) throw new Error("Operational eyebrow scale is below 14px");
+if (!css.includes(".control-block legend, .field-label { display: block; margin-bottom: .65rem; font-size: .875rem")) throw new Error("Scope label scale is below 14px");
 if (css.includes("→") || css.includes("↗")) throw new Error("Decorative arrows are not allowed in styles");
 if (/href=["']\/(?!\/)/.test(html) || /src=["']\/(?!\/)/.test(html)) throw new Error("Root-relative asset/link escaped the portal prefix");
 for (const file of ["policies.html", "privacy.html", "terms.html", "cookies.html", "scope.html"]) {
