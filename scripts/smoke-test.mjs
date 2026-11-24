@@ -15,7 +15,7 @@ for (const phrase of ["Morrow &amp; Mason", "Material Lab", "Scope Builder", "Re
 for (const phrase of ["openMenu", "Escape", "localDateString", "updateUrl", "currentFilter", "data-lang"]) {
   if (!js.includes(phrase)) throw new Error(`Missing interaction guard: ${phrase}`);
 }
-for (const phrase of ["scopeInvalidControls", "invalidateScopeSubmission", "aria-invalid", "Update this brief", "Actualizar este brief"]) {
+for (const phrase of ["scopeInvalidControls", "invalidateScopeSubmission", "aria-invalid", "Update this brief", "Actualizar este resumen"]) {
   if (!js.includes(phrase)) throw new Error(`Missing scope accessibility/state guard: ${phrase}`);
 }
 if (js.includes("s.reset")) throw new Error("Scope actions must not reuse a single reset label");

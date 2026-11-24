@@ -9,6 +9,8 @@ test.describe("Morrow scope builder", () => {
     await page.setViewportSize({ width, height: 844 });
     await page.goto(`${indexUrl}?view=scope&lang=en&qa=browser&cache=fixture#main-content`);
     await expect(page).toHaveTitle("Scope Builder | Morrow & Mason");
+    await expect(page.locator('[aria-current="page"]')).toHaveCount(1);
+    await expect(page.locator('#primary-nav [aria-current="page"]')).toHaveAttribute("data-view-link", "scope");
 
     const form = page.locator("#scope-form");
     const status = page.locator("#scope-status");
@@ -48,14 +50,16 @@ test.describe("Morrow scope builder", () => {
     expect(url.searchParams.get("qa")).toBe("browser");
     expect(url.searchParams.get("cache")).toBe("fixture");
     expect(url.hash).toBe("#main-content");
-    await expect(submit).toHaveText("Preparar brief de demo");
-    await expect(clear).toHaveText("Limpiar brief");
+    await expect(submit).toHaveText("Preparar resumen de demo");
+    await expect(clear).toHaveText("Limpiar resumen");
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
 
     await submit.click();
-    await expect(status).toContainText("Brief de demo preparado localmente");
+    await expect(status).toContainText("Resumen de demo preparado localmente");
     await expect(status).toBeFocused();
-    await expect(submit).toHaveText("Actualizar este brief");
+    await expect(submit).toHaveText("Actualizar este resumen");
+    await expect(page.locator("body")).not.toHaveText(/\b(preview|brief|handoff)\b/i);
+    await expect(page.locator('[aria-current="page"]')).toHaveCount(1);
   });
   }
 });
