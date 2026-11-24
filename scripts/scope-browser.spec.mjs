@@ -3,6 +3,28 @@ import { test, expect } from "playwright/test";
 const indexUrl = new URL("../dist/index.html", import.meta.url).href;
 test.use({ channel: "chrome" });
 
+test("keeps review context in native view and legal links", async ({ page, context }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const lang of ["en", "es"]) {
+    await page.goto(`${indexUrl}?view=home&lang=${lang}&qa=review&cache=fixture#main-content`);
+    const work = page.locator('#primary-nav a[data-view-link="work"]');
+    const href = new URL(await work.getAttribute("href"), page.url());
+    expect(Object.fromEntries(href.searchParams)).toEqual({ view: "work", lang, qa: "review", cache: "fixture" });
+    expect(href.hash).toBe("#main-content");
+    const tab = await context.newPage();
+    await tab.goto(href.href);
+    await expect(tab.locator("html")).toHaveAttribute("lang", lang);
+    await expect(tab.locator('#primary-nav a[aria-current="page"]')).toHaveAttribute("data-view-link", "work");
+    await tab.close();
+    await page.locator('.footer-shell a[href*="policies.html"]').click();
+    const legal = new URL(page.url());
+    expect(Object.fromEntries(legal.searchParams)).toEqual({ lang, qa: "review", cache: "fixture" });
+    expect(legal.hash).toBe("");
+    const back = new URL(await page.locator("header .brand").getAttribute("href"), page.url());
+    expect(Object.fromEntries(back.searchParams)).toEqual({ lang, qa: "review", cache: "fixture" });
+  }
+});
+
 test.describe("Morrow scope builder", () => {
   for (const width of [390, 1440]) {
   test(`keeps brief state, focus and URL coherent in EN/ES at ${width}px`, async ({ page }) => {

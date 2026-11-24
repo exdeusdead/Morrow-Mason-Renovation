@@ -115,7 +115,30 @@ function invalidateScopeSubmission() {
   resetScopeDraftView();
 }
 
-function updateInternalLinks() { document.querySelectorAll("a[href]").forEach((linkElement) => { const raw = linkElement.getAttribute("href"); if (!raw || raw.startsWith("#") || raw.startsWith("http") || raw.startsWith("mailto:")) return; const target = new URL(raw, location.href); target.searchParams.set("lang", state.language); if (linkElement.dataset.viewLink) { target.searchParams.set("view", linkElement.dataset.viewLink); if (linkElement.dataset.viewLink !== "work") target.searchParams.delete("filter"); } linkElement.setAttribute("href", (target.pathname === location.pathname ? "" : target.pathname.split("/").pop()) + target.search + target.hash); }); }
+function updateInternalLinks() {
+  const here = new URL(location.href);
+  document.querySelectorAll("a[href]").forEach((link) => {
+    const raw = link.getAttribute("href");
+    if (!raw || raw.startsWith("#") || /^(?:[a-z]+:|\/\/)/i.test(raw)) return;
+    const target = new URL(raw, here);
+    const view = link.dataset.viewLink;
+    for (const key of ["qa", "cache"]) {
+      if (!target.searchParams.has(key)) {
+        here.searchParams.getAll(key).forEach((value) => target.searchParams.append(key, value));
+      }
+    }
+    target.searchParams.set("lang", state.language);
+    if (view) target.searchParams.set("view", view);
+    if (view === "work" && state.currentFilter !== "all") {
+      target.searchParams.set("filter", state.currentFilter);
+    } else {
+      target.searchParams.delete("filter");
+    }
+    const sameShell = target.pathname === here.pathname;
+    if (sameShell && !target.hash) target.hash = here.hash;
+    link.setAttribute("href", (sameShell ? "" : target.pathname.split("/").pop()) + target.search + target.hash);
+  });
+}
 function updateShellCopy() { const c = COPY[state.language]; const navLabels = [c.nav.work, c.nav.materials, c.nav.scope]; document.querySelectorAll("#primary-nav a").forEach((linkElement, index) => { if (navLabels[index]) linkElement.textContent = navLabels[index]; }); const buildLink = document.querySelector(".header-actions .button"); if (buildLink) buildLink.textContent = c.nav.build; const footerLabels = state.language === "es" ? ["Políticas", "Privacidad", "Términos", "Cookies", "Alcance"] : ["Policies", "Privacy", "Terms", "Cookies", "Scope"]; document.querySelectorAll(".footer-shell nav a").forEach((linkElement, index) => { if (footerLabels[index]) linkElement.textContent = footerLabels[index]; }); const footerText = document.querySelector(".footer-shell > p"); if (footerText) footerText.textContent = c.footer; const footerBrand = document.querySelector(".footer-brand span"); if (footerBrand) footerBrand.textContent = state.language === "es" ? "Estudio de renovación" : "Renovation studio"; const footerNav = document.querySelector(".footer-shell nav"); if (footerNav) footerNav.setAttribute("aria-label", state.language === "es" ? "Enlaces legales" : "Legal links"); const skip = document.querySelector(".skip-link"); if (skip) skip.textContent = state.language === "es" ? "Saltar al contenido" : "Skip to content"; const toggle = document.querySelector(".menu-toggle"); if (toggle) toggle.textContent = state.menuOpen ? c.a11y.close : c.a11y.menu; }
 function renderApp() { const main = document.getElementById("main-content"); if (!main) return; main.innerHTML = state.view === "work" ? renderWork() : state.view === "materials" ? renderMaterials() : state.view === "scope" ? renderScope() : renderHome(); document.documentElement.lang = state.language; updateViewMetadata(); const select = document.getElementById("language-select"); if (select) { select.value = state.language; select.setAttribute("aria-label", COPY[state.language].a11y.language); select.setAttribute("data-lang", state.language); } const nav = document.getElementById("primary-nav"); if (nav) nav.setAttribute("aria-label", COPY[state.language].a11y.primary); updateShellCopy(); document.querySelectorAll("[data-view-link]").forEach((linkElement) => { if ((linkElement.closest("#primary-nav") || linkElement.matches("header .brand")) && linkElement.dataset.viewLink === state.view) linkElement.setAttribute("aria-current", "page"); else linkElement.removeAttribute("aria-current"); }); updateInternalLinks(); bindInteractions(); }
 
