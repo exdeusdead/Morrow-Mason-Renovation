@@ -37,6 +37,12 @@ test.describe("Morrow scope builder", () => {
     await expect(submit).toHaveText("Update this brief");
     await expect(clear).toHaveText("Clear brief");
     await expect(page.locator(".summary-list")).toBeVisible();
+    const selector = page.locator("#language-select");
+    await expect(selector).toHaveCSS("font-size", "14px");
+    expect((await selector.boundingBox()).height).toBeGreaterThanOrEqual(40);
+    for (const [name, size] of [[".summary-item", "14px"], [".summary-note", "16px"], [".view-note", "16px"]]) {
+      await expect(page.locator(name).first()).toHaveCSS("font-size", size);
+    }
 
     await page.locator('[name="details"]').fill("A quieter room for hosting");
     await expect(status).not.toContainText("Demo brief prepared locally");
@@ -58,6 +64,7 @@ test.describe("Morrow scope builder", () => {
     await expect(status).toContainText("Resumen de demo preparado localmente");
     await expect(status).toBeFocused();
     await expect(submit).toHaveText("Actualizar este resumen");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
     await expect(page.locator("body")).not.toHaveText(/\b(preview|brief|handoff)\b/i);
     await expect(page.locator('[aria-current="page"]')).toHaveCount(1);
   });
