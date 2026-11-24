@@ -62,7 +62,61 @@ function link(view, label) { return '<a href="?view=' + view + '&lang=' + state.
 function renderHome() { const c = COPY[state.language]; return '<section class="hero section-shell"><div class="hero-copy"><p class="eyebrow">' + c.hero.eyebrow + '</p><h1>' + c.hero.title + '</h1><p class="hero-lede">' + c.hero.lede + '</p><div class="hero-actions"><a class="button button-primary" href="?view=scope&lang=' + state.language + '" data-view-link="scope">' + c.hero.primary + '</a><a class="text-link" href="?view=work&lang=' + state.language + '" data-view-link="work">' + c.hero.secondary + '</a></div><p class="demo-note">' + c.hero.note + '</p></div><div class="hero-art"><img src="assets/courtyard.svg" alt="' + (state.language === "es" ? "Estudio de renovación de patio" : "Courtyard renovation study") + '"><div class="hero-stamp"><span>MM</span><small>' + (state.language === "es" ? "Espacio / luz / material" : "Space / light / material") + '</small></div></div></section><section class="intro-strip section-shell"><div><span class="section-index">01</span><h2>' + c.home.introTitle + '</h2></div><p>' + c.home.introBody + '</p></section><section class="home-grid section-shell"><a class="feature-card feature-card-dark" href="?view=materials&lang=' + state.language + '" data-view-link="materials"><span class="card-kicker">' + c.materials.eyebrow + '</span><h2>' + c.home.materialTitle + '</h2><span class="card-action">' + c.home.materialAction + '</span></a><a class="feature-card" href="?view=work&lang=' + state.language + '" data-view-link="work"><img src="assets/kitchen.svg" alt="' + (state.language === "es" ? "Estudio de cocina en roble" : "Oak kitchen study") + '"><div><span class="card-kicker">' + (state.language === "es" ? "PROYECTOS SELECCIONADOS" : "SELECTED WORK") + '</span><h2>' + c.home.workTitle + '</h2><span class="card-action">' + c.home.workAction + '</span></div></a><a class="feature-card feature-card-split" href="?view=scope&lang=' + state.language + '" data-view-link="scope"><div><span class="card-kicker">' + c.scope.eyebrow + '</span><h2>' + c.home.scopeTitle + '</h2><span class="card-action">' + c.home.scopeAction + '</span></div><img src="assets/limestone.svg" alt="' + (state.language === "es" ? "Muestra de caliza marfil" : "Ivory limestone sample") + '"></a></section>'; }
 function renderWork() { const c = COPY[state.language]; const filters = Object.keys(c.work.filters).map((key) => '<button class="filter-button" type="button" data-filter="' + key + '" aria-pressed="' + (state.currentFilter === key) + '">' + c.work.filters[key] + '</button>').join(""); const visible = state.currentFilter === "all" ? WORK : WORK.filter((item) => item.type === state.currentFilter); const cards = visible.map((item) => '<article class="project-card"><img src="' + item.image + '" alt="' + esc(item.title[state.language]) + '"><div class="project-body"><h3>' + item.title[state.language] + '</h3><p>' + item.body[state.language] + '</p><div class="tag-row">' + item.tags[state.language].map((tag) => '<span class="tag">' + tag + '</span>').join("") + '</div></div></article>').join(""); return '<section class="view-hero section-shell"><div><p class="eyebrow">' + c.work.eyebrow + '</p><h1>' + c.work.title + '</h1></div><div><p>' + c.work.lede + '</p><p class="view-note">' + c.work.note + '</p></div></section><section class="view-content section-shell"><div class="filter-bar" role="group" aria-label="' + (state.language === "es" ? "Filtrar proyectos" : "Filter work") + '">' + filters + '</div>' + (cards ? '<div class="project-grid">' + cards + '</div>' : '<div class="empty-state" role="status" aria-live="polite">' + c.work.empty + '</div>') + '</section>'; }
 function materialButton(group, key) { const item = MATERIALS[group][key]; return '<button class="swatch-button" type="button" data-material-group="' + group + '" data-material="' + key + '" aria-pressed="' + (state.materials[group] === key) + '"><span style="background-image:url(\'' + item.image + '\');background-size:cover" aria-hidden="true"></span>' + item.label[state.language] + '</button>'; }
-function renderMaterials() { const c = COPY[state.language]; const cabinet = MATERIALS.cabinet[state.materials.cabinet]; const counter = MATERIALS.counter[state.materials.counter]; const tile = MATERIALS.tile[state.materials.tile]; return '<section class="view-hero section-shell"><div><p class="eyebrow">' + c.materials.eyebrow + '</p><h1>' + c.materials.title + '</h1></div><div><p>' + c.materials.lede + '</p><p class="view-note">' + c.materials.note + '</p></div></section><section class="view-content section-shell material-layout"><aside class="material-controls"><div class="control-block"><span class="field-label">' + c.materials.cabinet + '</span><div class="swatch-row">' + Object.keys(MATERIALS.cabinet).map((key) => materialButton("cabinet", key)).join("") + '</div></div><div class="control-block"><span class="field-label">' + c.materials.counter + '</span><div class="swatch-row">' + Object.keys(MATERIALS.counter).map((key) => materialButton("counter", key)).join("") + '</div></div><div class="control-block"><span class="field-label">' + c.materials.tile + '</span><div class="swatch-row">' + Object.keys(MATERIALS.tile).map((key) => materialButton("tile", key)).join("") + '</div></div><p class="field-help" aria-live="polite">' + c.materials.selected + ': ' + cabinet.label[state.language] + ', ' + counter.label[state.language] + ', ' + tile.label[state.language] + '.</p></aside><div class="board"><img class="board-art" src="assets/kitchen.svg" alt=""><div class="board-overlay"><div class="board-topline"><span>' + c.materials.board + '</span><span>' + c.materials.room + '</span></div><div class="board-title"><p class="micro-label">' + (state.language === "es" ? "DIRECCIÓN ACTUAL" : "CURRENT DIRECTION") + '</p><h2>' + cabinet.label[state.language] + ' + ' + counter.label[state.language] + '</h2><p>' + c.materials.note + '</p></div><div class="board-materials"><div class="board-material"><img src="' + cabinet.image + '" alt="' + cabinet.label[state.language] + '"><span>' + cabinet.label[state.language] + '</span></div><div class="board-material"><img src="' + counter.image + '" alt="' + counter.label[state.language] + '"><span>' + counter.label[state.language] + '</span></div><div class="board-material"><img src="' + tile.image + '" alt="' + tile.label[state.language] + '"><span>' + tile.label[state.language] + '</span></div></div></div></div></section>'; }
+const MATERIAL_GUIDANCE = {
+  cabinet: {
+    oak: { en: "Compare grain across two adjacent doors and view the finish in daylight and task lighting.", es: "Compara la veta entre dos puertas contiguas y mira el acabado con luz natural y luz de trabajo." },
+    linen: { en: "Use the linen tone as a color reference for cabinetry. Check a painted door sample for sheen and cleanability.", es: "Usa el tono del lino como referencia de color para los muebles. Revisa el brillo y la facilidad de limpieza en una puerta pintada de muestra." }
+  },
+  counter: {
+    limestone: { en: "Ask the supplier how the proposed finish handles spills, staining and routine cleaning. Review a full-size sample before choosing.", es: "Pregunta al proveedor cómo responde el acabado a derrames, manchas y limpieza habitual. Revisa una muestra de tamaño real antes de elegir." },
+    oak: { en: "Compare the sealed sample near the sink and read the supplier’s care instructions before committing to wood in a wet area.", es: "Compara la muestra sellada junto al fregadero y consulta los cuidados del proveedor antes de elegir madera para una zona húmeda." }
+  },
+  tile: {
+    sage: { en: "Set the tile beside the counter sample and compare two grout colors with the task lights on.", es: "Coloca el azulejo junto a la muestra de encimera y compara dos colores de junta con la luz de trabajo encendida." },
+    linen: { en: "Bring the linen sample into the room and check how much daylight it softens. Keep it clear of splash and heat zones.", es: "Lleva la muestra de lino a la habitación y revisa cuánto suaviza la luz. Mantenla fuera de las zonas de salpicaduras y calor." }
+  }
+};
+
+function renderMaterials() {
+  const { language, materials } = state;
+  const { materials: copy } = COPY[language];
+  const groups = ["cabinet", "counter", "tile"];
+  const selected = groups.map((group) => MATERIALS[group][materials[group]]);
+  const controls = groups.map((group) => `
+    <div class="control-block">
+      <span class="field-label">${copy[group]}</span>
+      <div class="swatch-row">${Object.keys(MATERIALS[group]).map((key) => materialButton(group, key)).join("")}</div>
+    </div>`).join("");
+  const samples = selected.map((item) => `
+    <div class="board-material"><img src="${item.image}" alt=""><span>${item.label[language]}</span></div>`).join("");
+  const notes = groups.map((group, index) => `
+    <div><dt>${selected[index].label[language]}</dt><dd>${MATERIAL_GUIDANCE[group][materials[group]][language]}</dd></div>`).join("");
+  return `
+    <section class="view-hero section-shell">
+      <div><p class="eyebrow">${copy.eyebrow}</p><h1>${copy.title}</h1></div>
+      <div><p>${copy.lede}</p><p class="view-note">${copy.note}</p></div>
+    </section>
+    <section class="view-content section-shell material-layout">
+      <aside class="material-controls">
+        ${controls}
+        <p class="field-help" aria-live="polite">${copy.selected}: ${selected.map((item) => item.label[language]).join(", ")}.</p>
+      </aside>
+      <div class="material-study">
+        <div class="board">
+          <img class="board-art" src="assets/kitchen.svg" alt="">
+          <div class="board-overlay">
+            <div class="board-topline"><span>${copy.board}</span><span>${copy.room}</span></div>
+            <div class="board-title"><h2>${selected[0].label[language]} + ${selected[1].label[language]}</h2></div>
+            <div class="board-materials">${samples}</div>
+          </div>
+        </div>
+        <section class="material-notes" aria-labelledby="material-notes-title">
+          <h2 id="material-notes-title">${language === "es" ? "Qué comprobar con las muestras" : "What to check with samples"}</h2>
+          <dl>${notes}</dl>
+        </section>
+      </div>
+    </section>`;
+}
 function summaryItems(c) { const s = c.scope; const values = { room: s.roomOptions[state.scope.room], scale: s.scaleOptions[state.scope.scale], timeline: s.timelineOptions[state.scope.timeline], details: state.scope.details, priorities: state.scope.priorities.map((key) => s.priorityOptions[key]).join(", ") }; if (!values.room && !values.scale && !values.timeline && !values.details && !values.priorities) return '<p class="summary-empty">' + s.summaryEmpty + '</p>'; return '<div class="summary-list"><div class="summary-item"><span>' + s.summaryRoom + '</span><strong>' + esc(values.room || "—") + '</strong></div><div class="summary-item"><span>' + s.summaryScale + '</span><strong>' + esc(values.scale || "—") + '</strong></div><div class="summary-item"><span>' + s.summaryTimeline + '</span><strong>' + esc(values.timeline || "—") + '</strong></div><div class="summary-item"><span>' + s.summaryDetails + '</span><strong>' + esc(values.details || "—") + '</strong></div><div class="summary-item"><span>' + s.summarySelected + '</span><strong>' + esc(values.priorities || "—") + '</strong></div></div>'; }
 function renderScope() {
   const c = COPY[state.language];
@@ -160,7 +214,7 @@ function bindInteractions() {
   const toggle = document.querySelector(".menu-toggle"); if (toggle && !toggle.dataset.bound) { toggle.dataset.bound = "true"; toggle.addEventListener("click", () => state.menuOpen ? closeMenu(false) : openMenu()); }
   document.querySelectorAll("#primary-nav a").forEach((linkElement) => { if (!linkElement.dataset.bound) { linkElement.dataset.bound = "true"; linkElement.addEventListener("click", () => closeMenu(false)); } });
   document.querySelectorAll("[data-filter]").forEach((button) => button.addEventListener("click", () => { state.currentFilter = button.dataset.filter; updateUrl(false); renderApp(); }));
-  document.querySelectorAll("[data-material-group]").forEach((button) => button.addEventListener("click", () => { state.materials[button.dataset.materialGroup] = button.dataset.material; renderApp(); }));
+  document.querySelectorAll("[data-material-group]").forEach((button) => button.addEventListener("click", () => { const { materialGroup, material } = button.dataset; if (state.materials[materialGroup] === material) return; state.materials[materialGroup] = material; renderApp(); document.querySelector(`[data-material-group="${materialGroup}"][data-material="${material}"]`)?.focus({ preventScroll: true }); }));
   const language = document.getElementById("language-select"); if (language && !language.dataset.bound) { language.dataset.bound = "true"; language.addEventListener("change", () => { state.language = language.value === "es" ? "es" : "en"; safeStorage("set", "morrow-language", state.language); updateUrl(true); const page = document.getElementById("main-content")?.dataset.policyPage; if (page) renderPolicyPage(page); else renderApp(); }); }
   const form = document.getElementById("scope-form");
   const handleScopeFieldChange = (event) => {

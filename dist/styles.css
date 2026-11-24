@@ -108,6 +108,13 @@ h3 { font-size: clamp(1.4rem, 2vw, 2rem); }
 .swatch-button[aria-pressed="true"] span { border-color: var(--coral); box-shadow: 0 0 0 3px var(--cream), 0 0 0 5px var(--coral); }
 .board { position: relative; min-height: 600px; overflow: hidden; padding: clamp(1.3rem, 4vw, 3rem); border-radius: var(--radius); background: #d8d0c7; }
 .board-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .55; mix-blend-mode: multiply; }
+.material-study { min-width: 0; }
+.material-notes { margin-block-start: 1rem; padding: clamp(1rem, 3vw, 1.75rem); border: 1px solid #dccbbd; border-radius: 1rem; background: #fffaf4; }
+.material-notes h2 { margin: 0 0 .8rem; font-size: clamp(1.25rem, 2vw, 1.55rem); }
+.material-notes dl { display: grid; gap: .85rem; margin: 0; }
+.material-notes dl > div { border-inline-start: 2px solid var(--coral); padding-inline-start: .8rem; }
+.material-notes dt { font-weight: 700; }
+.material-notes dd { margin: .25rem 0 0; color: var(--ink-soft); font-size: 1rem; line-height: 1.55; }
 .board-overlay { position: relative; display: grid; min-height: 520px; align-content: space-between; }
 .board-topline { display: flex; justify-content: space-between; gap: 1rem; color: var(--ink-soft); font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .board-title { max-width: 500px; padding: 1.2rem; border-radius: 16px; background: rgba(255,250,244,.9); box-shadow: var(--shadow); }

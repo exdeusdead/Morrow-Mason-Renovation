@@ -3,6 +3,23 @@ import { test, expect } from "playwright/test";
 const indexUrl = new URL("../dist/index.html", import.meta.url).href;
 test.use({ channel: "chrome" });
 
+test("material notes follow the selected finish and preserve keyboard focus", async ({ page }) => {
+  for (const [lang, width] of [["es", 390], ["en", 1440]]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto(`${indexUrl}?view=materials&lang=${lang}`);
+    const notes = page.locator(".material-notes");
+    await expect(notes.locator("dd")).toHaveCount(3);
+    await expect(notes).toContainText(lang === "es" ? "derrames" : "spills");
+    const oak = page.locator('[data-material-group="counter"][data-material="oak"]');
+    await oak.focus();
+    await page.keyboard.press("Enter");
+    await expect(oak).toBeFocused();
+    await expect(oak).toHaveAttribute("aria-pressed", "true");
+    await expect(notes).toContainText(lang === "es" ? "fregadero" : "sink");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+  }
+});
+
 test("keeps review context in native view and legal links", async ({ page, context }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   for (const lang of ["en", "es"]) {
