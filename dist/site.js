@@ -62,6 +62,14 @@ function link(view, label) { return '<a href="?view=' + view + '&lang=' + state.
 function renderHome() { const c = COPY[state.language]; return '<section class="hero section-shell"><div class="hero-copy"><p class="eyebrow">' + c.hero.eyebrow + '</p><h1>' + c.hero.title + '</h1><p class="hero-lede">' + c.hero.lede + '</p><div class="hero-actions"><a class="button button-primary" href="?view=scope&lang=' + state.language + '" data-view-link="scope">' + c.hero.primary + '</a><a class="text-link" href="?view=work&lang=' + state.language + '" data-view-link="work">' + c.hero.secondary + '</a></div><p class="demo-note">' + c.hero.note + '</p></div><div class="hero-art"><img src="assets/courtyard.svg" alt="' + (state.language === "es" ? "Estudio de renovación de patio" : "Courtyard renovation study") + '"><div class="hero-stamp"><span>MM</span><small>' + (state.language === "es" ? "Espacio / luz / material" : "Space / light / material") + '</small></div></div></section><section class="intro-strip section-shell"><div><span class="section-index">01</span><h2>' + c.home.introTitle + '</h2></div><p>' + c.home.introBody + '</p></section><section class="home-grid section-shell"><a class="feature-card feature-card-dark" href="?view=materials&lang=' + state.language + '" data-view-link="materials"><span class="card-kicker">' + c.materials.eyebrow + '</span><h2>' + c.home.materialTitle + '</h2><span class="card-action">' + c.home.materialAction + '</span></a><a class="feature-card" href="?view=work&lang=' + state.language + '" data-view-link="work"><img src="assets/kitchen.svg" alt="' + (state.language === "es" ? "Estudio de cocina en roble" : "Oak kitchen study") + '"><div><span class="card-kicker">' + (state.language === "es" ? "PROYECTOS SELECCIONADOS" : "SELECTED WORK") + '</span><h2>' + c.home.workTitle + '</h2><span class="card-action">' + c.home.workAction + '</span></div></a><a class="feature-card feature-card-split" href="?view=scope&lang=' + state.language + '" data-view-link="scope"><div><span class="card-kicker">' + c.scope.eyebrow + '</span><h2>' + c.home.scopeTitle + '</h2><span class="card-action">' + c.home.scopeAction + '</span></div><img src="assets/limestone.svg" alt="' + (state.language === "es" ? "Muestra de caliza marfil" : "Ivory limestone sample") + '"></a></section>'; }
 function renderWork() { const c = COPY[state.language]; const filters = Object.keys(c.work.filters).map((key) => '<button class="filter-button" type="button" data-filter="' + key + '" aria-pressed="' + (state.currentFilter === key) + '">' + c.work.filters[key] + '</button>').join(""); const visible = state.currentFilter === "all" ? WORK : WORK.filter((item) => item.type === state.currentFilter); const cards = visible.map((item) => '<article class="project-card"><img src="' + item.image + '" alt="' + esc(item.title[state.language]) + '"><div class="project-body"><h3>' + item.title[state.language] + '</h3><p>' + item.body[state.language] + '</p><div class="tag-row">' + item.tags[state.language].map((tag) => '<span class="tag">' + tag + '</span>').join("") + '</div></div></article>').join(""); return '<section class="view-hero section-shell"><div><p class="eyebrow">' + c.work.eyebrow + '</p><h1>' + c.work.title + '</h1></div><div><p>' + c.work.lede + '</p><p class="view-note">' + c.work.note + '</p></div></section><section class="view-content section-shell"><div class="filter-bar" role="group" aria-label="' + (state.language === "es" ? "Filtrar proyectos" : "Filter work") + '">' + filters + '</div>' + (cards ? '<div class="project-grid">' + cards + '</div>' : '<div class="empty-state" role="status" aria-live="polite">' + c.work.empty + '</div>') + '</section>'; }
 function materialButton(group, key) { const item = MATERIALS[group][key]; return '<button class="swatch-button" type="button" data-material-group="' + group + '" data-material="' + key + '" aria-pressed="' + (state.materials[group] === key) + '"><span style="background-image:url(\'' + item.image + '\');background-size:cover" aria-hidden="true"></span>' + item.label[state.language] + '</button>'; }
+const MATERIAL_GROUPS = ["cabinet", "counter", "tile"];
+
+function scopeMaterialSelection() {
+  const params = new URLSearchParams(location.search);
+  const keys = MATERIAL_GROUPS.map((group) => params.get(group));
+  if (!keys.every((key, index) => Object.hasOwn(MATERIALS[MATERIAL_GROUPS[index]], key))) return [];
+  return keys.map((key, index) => MATERIALS[MATERIAL_GROUPS[index]][key].label[state.language]);
+}
 const MATERIAL_GUIDANCE = {
   cabinet: {
     oak: { en: "Compare grain across two adjacent doors and view the finish in daylight and task lighting.", es: "Compara la veta entre dos puertas contiguas y mira el acabado con luz natural y luz de trabajo." },
@@ -80,7 +88,7 @@ const MATERIAL_GUIDANCE = {
 function renderMaterials() {
   const { language, materials } = state;
   const { materials: copy } = COPY[language];
-  const groups = ["cabinet", "counter", "tile"];
+  const groups = MATERIAL_GROUPS;
   const selected = groups.map((group) => MATERIALS[group][materials[group]]);
   const controls = groups.map((group) => `
     <div class="control-block">
@@ -113,11 +121,12 @@ function renderMaterials() {
         <section class="material-notes" aria-labelledby="material-notes-title">
           <h2 id="material-notes-title">${language === "es" ? "Qué comprobar con las muestras" : "What to check with samples"}</h2>
           <dl>${notes}</dl>
+          <a class="button button-primary" data-view-link="scope" href="?${new URLSearchParams({ view: "scope", lang: language, ...materials })}#main-content">${language === "es" ? "Añadir muestras al alcance" : "Add samples to scope"}</a>
         </section>
       </div>
     </section>`;
 }
-function summaryItems(c) { const s = c.scope; const values = { room: s.roomOptions[state.scope.room], scale: s.scaleOptions[state.scope.scale], timeline: s.timelineOptions[state.scope.timeline], details: state.scope.details, priorities: state.scope.priorities.map((key) => s.priorityOptions[key]).join(", ") }; if (!values.room && !values.scale && !values.timeline && !values.details && !values.priorities) return '<p class="summary-empty">' + s.summaryEmpty + '</p>'; return '<div class="summary-list"><div class="summary-item"><span>' + s.summaryRoom + '</span><strong>' + esc(values.room || "—") + '</strong></div><div class="summary-item"><span>' + s.summaryScale + '</span><strong>' + esc(values.scale || "—") + '</strong></div><div class="summary-item"><span>' + s.summaryTimeline + '</span><strong>' + esc(values.timeline || "—") + '</strong></div><div class="summary-item"><span>' + s.summaryDetails + '</span><strong>' + esc(values.details || "—") + '</strong></div><div class="summary-item"><span>' + s.summarySelected + '</span><strong>' + esc(values.priorities || "—") + '</strong></div></div>'; }
+function summaryItems(c) { const s = c.scope; const materials = scopeMaterialSelection(); const materialSummary = materials.length ? '<p class="scope-material-summary"><strong>' + (state.language === 'es' ? 'Muestras del laboratorio' : 'Material Lab samples') + '</strong> · ' + esc(materials.join(', ')) + '</p>' : ''; const values = { room: s.roomOptions[state.scope.room], scale: s.scaleOptions[state.scope.scale], timeline: s.timelineOptions[state.scope.timeline], details: state.scope.details, priorities: state.scope.priorities.map((key) => s.priorityOptions[key]).join(", ") }; if (!values.room && !values.scale && !values.timeline && !values.details && !values.priorities) return materialSummary + '<p class="summary-empty">' + s.summaryEmpty + '</p>'; return materialSummary + '<div class="summary-list"><div class="summary-item"><span>' + s.summaryRoom + '</span><strong>' + esc(values.room || "—") + '</strong></div><div class="summary-item"><span>' + s.summaryScale + '</span><strong>' + esc(values.scale || "—") + '</strong></div><div class="summary-item"><span>' + s.summaryTimeline + '</span><strong>' + esc(values.timeline || "—") + '</strong></div><div class="summary-item"><span>' + s.summaryDetails + '</span><strong>' + esc(values.details || "—") + '</strong></div><div class="summary-item"><span>' + s.summarySelected + '</span><strong>' + esc(values.priorities || "—") + '</strong></div></div>'; }
 function renderScope() {
   const c = COPY[state.language];
   const s = c.scope;
@@ -248,7 +257,7 @@ function bindInteractions() {
       successStatus.focus();
     }
   });
-  document.getElementById("scope-clear")?.addEventListener("click", () => { state.scopeSubmitted = false; state.scope = { room: "", scale: "", timeline: "", details: "", priorities: [] }; renderApp(); });
+  document.getElementById("scope-clear")?.addEventListener("click", () => { state.scopeSubmitted = false; state.scope = { room: "", scale: "", timeline: "", details: "", priorities: [] }; const url = new URL(location.href); MATERIAL_GROUPS.forEach((group) => url.searchParams.delete(group)); history.replaceState(history.state, "", url); renderApp(); });
 }
 
 const POLICY_PAGES = {

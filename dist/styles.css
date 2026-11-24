@@ -115,6 +115,8 @@ h3 { font-size: clamp(1.4rem, 2vw, 2rem); }
 .material-notes dl > div { border-inline-start: 2px solid var(--coral); padding-inline-start: .8rem; }
 .material-notes dt { font-weight: 700; }
 .material-notes dd { margin: .25rem 0 0; color: var(--ink-soft); font-size: 1rem; line-height: 1.55; }
+.material-notes .button { margin-block-start: 1rem; }
+.scope-material-summary { padding: .75rem; border-inline-start: 2px solid var(--coral); background: #fffaf4; line-height: 1.55; }
 .board-overlay { position: relative; display: grid; min-height: 520px; align-content: space-between; }
 .board-topline { display: flex; justify-content: space-between; gap: 1rem; color: var(--ink-soft); font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .board-title { max-width: 500px; padding: 1.2rem; border-radius: 16px; background: rgba(255,250,244,.9); box-shadow: var(--shadow); }

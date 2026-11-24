@@ -3,6 +3,25 @@ import { test, expect } from "playwright/test";
 const indexUrl = new URL("../dist/index.html", import.meta.url).href;
 test.use({ channel: "chrome" });
 
+test("selected material samples travel to the scope and clear with the brief", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(`${indexUrl}?view=materials&lang=es&qa=materials`);
+  await page.locator('[data-material-group="counter"][data-material="oak"]').click();
+  await page.getByRole("link", { name: "Añadir muestras al alcance" }).click();
+  const summary = page.locator(".scope-material-summary");
+  await expect(summary).toContainText("Roble cálido, Roble cálido, Azulejo verde salvia");
+  expect(new URL(page.url()).searchParams.get("qa")).toBe("materials");
+  await page.locator("#language-select").selectOption("en");
+  await expect(summary).toContainText("Warm oak, Warm oak, Quiet sage tile");
+  await page.reload();
+  await expect(summary).toBeVisible();
+  await page.locator("#scope-clear").click();
+  await expect(summary).toHaveCount(0);
+  expect(new URL(page.url()).searchParams.has("counter")).toBe(false);
+  await page.goto(`${indexUrl}?view=scope&cabinet=oak&counter=unknown&tile=sage`);
+  await expect(summary).toHaveCount(0);
+});
+
 test("material notes follow the selected finish and preserve keyboard focus", async ({ page }) => {
   for (const [lang, width] of [["es", 390], ["en", 1440]]) {
     await page.setViewportSize({ width, height: 844 });
