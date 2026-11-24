@@ -46,7 +46,16 @@ function text(path) { return path.split(".").reduce((value, part) => value && va
 function esc(value) { return String(value || "").replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char]); }
 function localDateString(date) { const current = date || new Date(); return current.getFullYear() + "-" + String(current.getMonth() + 1).padStart(2, "0") + "-" + String(current.getDate()).padStart(2, "0"); }
 function queryState() { const params = new URLSearchParams(location.search); const lang = params.get("lang"); state.language = lang === "es" || lang === "en" ? lang : (safeStorage("get", "morrow-language") || "en"); state.view = ["home", "work", "materials", "scope"].includes(params.get("view")) ? params.get("view") : "home"; state.currentFilter = ["all", "kitchen", "bath", "living"].includes(params.get("filter")) ? params.get("filter") : "all"; }
-function updateUrl(replace) { const params = new URLSearchParams(); if (state.view !== "home") params.set("view", state.view); params.set("lang", state.language); if (state.view === "work" && state.currentFilter !== "all") params.set("filter", state.currentFilter); const next = location.pathname + "?" + params.toString(); if (replace) history.replaceState({}, "", next); else history.pushState({}, "", next); }
+function updateUrl(replace) {
+  const next = new URL(location.href);
+  if (state.view === "home") next.searchParams.delete("view");
+  else next.searchParams.set("view", state.view);
+  next.searchParams.set("lang", state.language);
+  if (state.view === "work" && state.currentFilter !== "all") next.searchParams.set("filter", state.currentFilter);
+  else next.searchParams.delete("filter");
+  if (replace) history.replaceState({}, "", next);
+  else history.pushState({}, "", next);
+}
 
 function optionList(options, selected) { return Object.keys(options).map((key) => '<option value="' + key + '" ' + (selected === key ? "selected" : "") + '>' + options[key] + '</option>').join(""); }
 function link(view, label) { return '<a href="?view=' + view + '&lang=' + state.language + '" data-view-link="' + view + '">' + label + '</a>'; }
@@ -108,7 +117,20 @@ function invalidateScopeSubmission() {
 
 function updateInternalLinks() { document.querySelectorAll("a[href]").forEach((linkElement) => { const raw = linkElement.getAttribute("href"); if (!raw || raw.startsWith("#") || raw.startsWith("http") || raw.startsWith("mailto:")) return; const target = new URL(raw, location.href); target.searchParams.set("lang", state.language); if (linkElement.dataset.viewLink) { target.searchParams.set("view", linkElement.dataset.viewLink); if (linkElement.dataset.viewLink !== "work") target.searchParams.delete("filter"); } linkElement.setAttribute("href", (target.pathname === location.pathname ? "" : target.pathname.split("/").pop()) + target.search + target.hash); }); }
 function updateShellCopy() { const c = COPY[state.language]; const navLabels = [c.nav.work, c.nav.materials, c.nav.scope]; document.querySelectorAll("#primary-nav a").forEach((linkElement, index) => { if (navLabels[index]) linkElement.textContent = navLabels[index]; }); const buildLink = document.querySelector(".header-actions .button"); if (buildLink) buildLink.textContent = c.nav.build; const footerLabels = state.language === "es" ? ["Políticas", "Privacidad", "Términos", "Cookies", "Alcance"] : ["Policies", "Privacy", "Terms", "Cookies", "Scope"]; document.querySelectorAll(".footer-shell nav a").forEach((linkElement, index) => { if (footerLabels[index]) linkElement.textContent = footerLabels[index]; }); const footerText = document.querySelector(".footer-shell > p"); if (footerText) footerText.textContent = c.footer; const footerBrand = document.querySelector(".footer-brand span"); if (footerBrand) footerBrand.textContent = state.language === "es" ? "Estudio de renovación" : "Renovation studio"; const footerNav = document.querySelector(".footer-shell nav"); if (footerNav) footerNav.setAttribute("aria-label", state.language === "es" ? "Enlaces legales" : "Legal links"); const skip = document.querySelector(".skip-link"); if (skip) skip.textContent = state.language === "es" ? "Saltar al contenido" : "Skip to content"; const toggle = document.querySelector(".menu-toggle"); if (toggle) toggle.textContent = state.menuOpen ? c.a11y.close : c.a11y.menu; }
-function renderApp() { const main = document.getElementById("main-content"); if (!main) return; main.innerHTML = state.view === "work" ? renderWork() : state.view === "materials" ? renderMaterials() : state.view === "scope" ? renderScope() : renderHome(); document.documentElement.lang = state.language; document.title = COPY[state.language].title; const select = document.getElementById("language-select"); if (select) { select.value = state.language; select.setAttribute("aria-label", COPY[state.language].a11y.language); select.setAttribute("data-lang", state.language); } const nav = document.getElementById("primary-nav"); if (nav) nav.setAttribute("aria-label", COPY[state.language].a11y.primary); updateShellCopy(); document.querySelectorAll("[data-view-link]").forEach((linkElement) => { if (linkElement.dataset.viewLink === state.view) linkElement.setAttribute("aria-current", "page"); else linkElement.removeAttribute("aria-current"); }); updateInternalLinks(); bindInteractions(); }
+function renderApp() { const main = document.getElementById("main-content"); if (!main) return; main.innerHTML = state.view === "work" ? renderWork() : state.view === "materials" ? renderMaterials() : state.view === "scope" ? renderScope() : renderHome(); document.documentElement.lang = state.language; updateViewMetadata(); const select = document.getElementById("language-select"); if (select) { select.value = state.language; select.setAttribute("aria-label", COPY[state.language].a11y.language); select.setAttribute("data-lang", state.language); } const nav = document.getElementById("primary-nav"); if (nav) nav.setAttribute("aria-label", COPY[state.language].a11y.primary); updateShellCopy(); document.querySelectorAll("[data-view-link]").forEach((linkElement) => { if (linkElement.dataset.viewLink === state.view) linkElement.setAttribute("aria-current", "page"); else linkElement.removeAttribute("aria-current"); }); updateInternalLinks(); bindInteractions(); }
+
+function updateViewMetadata() {
+  const copy = COPY[state.language];
+  const viewCopy = copy[state.view] || copy.home;
+  const labels = state.language === "es"
+    ? { work: "Proyectos", materials: "Laboratorio de materiales", scope: "Planificador de alcance" }
+    : { work: "Work", materials: "Material Lab", scope: "Scope Builder" };
+  const label = labels[state.view];
+  document.title = label ? label + " | Morrow & Mason" : copy.title;
+  const description = document.querySelector('meta[name="description"]');
+  const lede = viewCopy?.lede || document.querySelector("#main-content h1")?.textContent;
+  if (description && lede) description.content = lede;
+}
 function openMenu() { const nav = document.getElementById("primary-nav"); const toggle = document.querySelector(".menu-toggle"); if (!nav || !toggle) return; state.menuOpen = true; state.lastMenuTrigger = toggle; nav.dataset.open = "true"; toggle.setAttribute("aria-expanded", "true"); toggle.textContent = COPY[state.language].a11y.close; nav.querySelector("a")?.focus(); }
 function closeMenu(restore) { const nav = document.getElementById("primary-nav"); const toggle = document.querySelector(".menu-toggle"); if (!nav || !toggle) return; state.menuOpen = false; nav.dataset.open = "false"; toggle.setAttribute("aria-expanded", "false"); toggle.textContent = COPY[state.language].a11y.menu; if (restore !== false) state.lastMenuTrigger?.focus(); }
 function bindInteractions() {
@@ -143,7 +165,11 @@ function bindInteractions() {
     }
     state.scopeSubmitted = true;
     renderApp();
-    document.getElementById("scope-status")?.focus();
+    const successStatus = document.getElementById("scope-status");
+    if (successStatus) {
+      successStatus.tabIndex = -1;
+      successStatus.focus();
+    }
   });
   document.getElementById("scope-clear")?.addEventListener("click", () => { state.scopeSubmitted = false; state.scope = { room: "", scale: "", timeline: "", details: "", priorities: [] }; renderApp(); });
 }
