@@ -20,6 +20,9 @@ test.describe("Morrow scope builder", () => {
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.locator(".eyebrow").first()).toHaveCSS("font-size", "14px");
     await expect(page.locator(".field-label").first()).toHaveCSS("font-size", "14px");
+    await expect(page.locator(".field-help").first()).toHaveCSS("font-size", "14px");
+    await expect(page.locator(".check-list label").first()).toHaveCSS("font-size", "14px");
+    await expect(status).toHaveCSS("font-size", "14px");
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
 
     await submit.click();
@@ -67,6 +70,19 @@ test.describe("Morrow scope builder", () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
     await expect(page.locator("body")).not.toHaveText(/\b(preview|brief|handoff)\b/i);
     await expect(page.locator('[aria-current="page"]')).toHaveCount(1);
+  });
+  test(`keeps filters and material controls legible at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 });
+    for (const lang of ["en", "es"]) {
+      for (const [view, selector] of [["work", ".filter-button"], ["materials", ".swatch-button"], ["home", ".button-small"]]) {
+        await page.goto(`${indexUrl}?view=${view}&lang=${lang}`);
+        const control = page.locator(selector).first();
+        await expect(control).toHaveCSS("font-size", "14px");
+        if (selector === ".button-small") await expect(control).toHaveCSS("min-height", "40px");
+        else expect((await control.boundingBox()).height).toBeGreaterThanOrEqual(40);
+        expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+      }
+    }
   });
   }
 });
