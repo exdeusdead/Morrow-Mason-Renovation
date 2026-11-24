@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" role="img" aria-labelledby="title desc">
+  <title id="title">Ash library</title><desc id="desc">A dark library with built-in shelving and warm light.</desc>
+  <rect width="720" height="520" rx="28" fill="#30292c"/><path d="M74 82h572v344H74z" fill="#57484a"/><path d="M105 119h510v258H105z" fill="#241f22"/><path d="M136 119v258M283 119v258M430 119v258M577 119v258" stroke="#a98067" stroke-width="12"/><path d="M105 197h510M105 277h510" stroke="#a98067" stroke-width="10"/><path d="M142 168h90v24h-90zM304 170h92v22h-92zM451 169h94v23h-94zM140 249h100v24H140zM309 248h82v25h-82zM456 248h94v25h-94z" fill="#d7a85f"/><path d="M105 377h510" stroke="#e4c7ab" stroke-width="10"/><path d="M257 377v49M463 377v49" stroke="#d97e63" stroke-width="13" stroke-linecap="round"/><circle cx="360" cy="78" r="15" fill="#e2a65e"/><path d="M357 89l-27 58M363 89l27 58" stroke="#e2a65e" stroke-width="7" stroke-linecap="round"/>
+</svg>
