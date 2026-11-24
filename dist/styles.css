@@ -51,8 +51,8 @@ h3 { font-size: clamp(1.4rem, 2vw, 2rem); }
 .hero-actions { display: flex; flex-wrap: wrap; gap: .9rem; align-items: center; margin: 2rem 0 1rem; }
 .button { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; padding: .72rem 1.1rem; border: 1px solid transparent; border-radius: 999px; font-size: .88rem; font-weight: 800; text-decoration: none; transition: transform .2s ease, background .2s ease, color .2s ease; }
 .button:hover { transform: translateY(-2px); }
-.button-primary { background: var(--coral); color: #fffaf4; box-shadow: 0 10px 26px rgba(201,103,87,.24); }
-.button-primary:hover { background: #a94d42; }
+.button-primary { background: #a94d42; color: #fffaf4; box-shadow: 0 10px 26px rgba(201,103,87,.24); }
+.button-primary:hover { background: #873d34; }
 .button-dark { background: var(--ink); color: var(--cream); }
 .button-small { min-height: 40px; padding: .5rem .85rem; font-size: .875rem; }
 .button-quiet { background: transparent; border-color: var(--line); color: var(--ink); }
