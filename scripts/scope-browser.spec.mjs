@@ -163,3 +163,27 @@ test("downloads the completed scope locally and hides export after edits", async
   await page.locator('[name="details"]').fill("Revisar iluminación nocturna");
   await expect(exportButton).toBeHidden();
 });
+
+test("material board is shareable and restores browser history", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(`${indexUrl}?view=materials&lang=en&qa=review&cache=fixture#main-content`);
+  await expect(page.locator(".control-block[aria-labelledby]")).toHaveCount(3);
+  const linen = page.locator('[data-material-group="cabinet"][data-material="linen"]');
+  await linen.click();
+  await expect(page).toHaveURL(/cabinet=linen/);
+  await page.goBack();
+  await expect(linen).toHaveAttribute("aria-pressed", "false");
+  await page.goForward();
+  await page.reload();
+  await expect(linen).toHaveAttribute("aria-pressed", "true");
+  await page.locator("#language-select").selectOption("es");
+  await expect(linen).toHaveAttribute("aria-pressed", "true");
+  const url = new URL(page.url());
+  expect(url.searchParams.get("qa")).toBe("review");
+  expect(url.searchParams.get("cache")).toBe("fixture");
+  expect(url.hash).toBe("#main-content");
+  expect(new URL(await page.locator('#primary-nav [data-view-link="scope"]').evaluate((link) => link.href)).searchParams.has("cabinet")).toBe(false);
+  for (const selector of [".brand small", ".board-topline", ".board-material span", ".footer-brand span", ".footer-shell nav a", ".footer-copy"]) {
+    await expect(page.locator(selector).first()).toHaveCSS("font-size", "14px");
+  }
+});
