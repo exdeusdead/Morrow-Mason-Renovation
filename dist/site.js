@@ -68,7 +68,11 @@ function scopeMaterialSelection() {
   const params = new URLSearchParams(location.search);
   const keys = MATERIAL_GROUPS.map((group) => params.get(group));
   if (!keys.every((key, index) => Object.hasOwn(MATERIALS[MATERIAL_GROUPS[index]], key))) return [];
-  return keys.map((key, index) => MATERIALS[MATERIAL_GROUPS[index]][key].label[state.language]);
+  const labels = state.language === "es" ? ["Mueble", "Encimera", "Azulejo"] : ["Cabinet", "Countertop", "Tile"];
+  return keys.map((key, index) => {
+    const material = MATERIALS[MATERIAL_GROUPS[index]][key];
+    return labels[index] + ": " + material.label[state.language];
+  });
 }
 const MATERIAL_GUIDANCE = {
   cabinet: {

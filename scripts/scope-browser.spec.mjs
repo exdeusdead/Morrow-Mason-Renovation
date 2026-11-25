@@ -9,10 +9,10 @@ test("selected material samples travel to the scope and clear with the brief", a
   await page.locator('[data-material-group="counter"][data-material="oak"]').click();
   await page.getByRole("link", { name: "Añadir muestras al alcance" }).click();
   const summary = page.locator(".scope-material-summary");
-  await expect(summary).toContainText("Roble cálido, Roble cálido, Azulejo verde salvia");
+  await expect(summary).toContainText("Mueble: Roble cálido, Encimera: Roble cálido, Azulejo: Azulejo verde salvia");
   expect(new URL(page.url()).searchParams.get("qa")).toBe("materials");
   await page.locator("#language-select").selectOption("en");
-  await expect(summary).toContainText("Warm oak, Warm oak, Quiet sage tile");
+  await expect(summary).toContainText("Cabinet: Warm oak, Countertop: Warm oak, Tile: Quiet sage tile");
   await page.reload();
   await expect(summary).toBeVisible();
   await page.locator("#scope-clear").click();
@@ -159,7 +159,7 @@ test("downloads the completed scope locally and hides export after edits", async
   const { readFile } = await import("node:fs/promises");
   const content = await readFile(await download.path(), "utf8");
   expect(content).toContain("Revisar luz natural");
-  expect(content).toContain("Roble cálido");
+  expect(content).toContain("Mueble: Roble cálido, Encimera: Roble cálido");
   await page.locator('[name="details"]').fill("Revisar iluminación nocturna");
   await expect(exportButton).toBeHidden();
 });
