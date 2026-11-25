@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 const root = new URL("../dist/", import.meta.url);
-const required = ["index.html", "styles.css", "site.js", "policies.html", "privacy.html", "terms.html", "cookies.html", "scope.html"];
+const required = ["index.html", "styles.css", "site.js", "policies.html", "privacy.html", "terms.html", "cookies.html", "scope.html", "accessibility.html"];
 for (const file of required) readFileSync(new URL(file, root), "utf8");
 
 const html = readFileSync(new URL("index.html", root), "utf8");
@@ -29,7 +29,7 @@ if (!css.includes(".eyebrow, .card-kicker, .section-index, .micro-label { color:
 if (!css.includes(".control-block legend, .field-label { display: block; margin-bottom: .65rem; font-size: .875rem")) throw new Error("Scope label scale is below 14px");
 if (css.includes("→") || css.includes("↗")) throw new Error("Decorative arrows are not allowed in styles");
 if (/href=["']\/(?!\/)/.test(html) || /src=["']\/(?!\/)/.test(html)) throw new Error("Root-relative asset/link escaped the portal prefix");
-for (const file of ["policies.html", "privacy.html", "terms.html", "cookies.html", "scope.html"]) {
+for (const file of ["policies.html", "privacy.html", "terms.html", "cookies.html", "scope.html", "accessibility.html"]) {
   const body = readFileSync(new URL(file, root), "utf8");
   if (!body.includes("data-policy-page") || !js.includes("Pre-launch") || !js.includes("not effective")) throw new Error(`Legal gate missing in ${file}`);
 }

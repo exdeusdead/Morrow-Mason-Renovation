@@ -41,14 +41,15 @@ function shell(template, lang, activeView, main, metadata) {
     .replace("<p>Independent product preview. Real project delivery, vendors, contracts and policy activation require owner approval.</p>", "<p>" + esc(c.footer) + "</p>")
     .replace(/<nav aria-label="Legal links">[\s\S]*?<\/nav>/, (nav) => nav
       .replace('aria-label="Legal links"', 'aria-label="' + (isSpanish ? "Enlaces legales" : "Legal links") + '"')
-      .replace(/(<a\b[^>]*>)[^<]+/g, (_, open) => open + esc(legalLinkLabels[lang][footerIndex++])));
+      .replace(/(<a\b[^>]*>)[^<]+/g, (_, open) => open + esc(legalLinkLabels[lang][footerIndex++]))
+      .replace('</nav>', '<a href="accessibility.html?lang=' + lang + '">' + esc(legalLinkLabels[lang][5]) + '</a></nav>'));
 }
 
 function scopePreview(lang) {
   const copy = COPY[lang].scope;
   return '<section class="view-hero section-shell"><div><p class="eyebrow">' + esc(copy.eyebrow) +
     '</p><h1>' + esc(copy.title) + '</h1></div><div><p>' + esc(copy.lede) +
-    '</p><p class="view-note">' + esc(copy.note) + '</p></div></section>' +
+    '</p><p class="view-note">' + esc(copy.note) + '</p><p class="quote-format">' + esc(copy.priceNote) + '</p></div></section>' +
     '<section class="view-content section-shell"><p>' + esc(lang === "es"
       ? "Activa JavaScript para elegir la habitación, los materiales y las prioridades y preparar un resumen local."
       : "Enable JavaScript to choose the room, materials and priorities and prepare a local brief.") +

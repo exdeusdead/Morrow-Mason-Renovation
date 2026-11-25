@@ -10,7 +10,8 @@ const paths = [
   ["privacy.html?", "Privacy", "Privacidad", ".policy-page article"],
   ["terms.html?", "Terms of use", "Términos de uso", ".policy-page article"],
   ["cookies.html?", "Cookies and technology", "Cookies y tecnología", ".policy-page article"],
-  ["scope.html?", "Scope and handoff", "Alcance y entrega", ".policy-page article"]
+  ["scope.html?", "Scope and handoff", "Alcance y entrega", ".policy-page article"],
+  ["accessibility.html?", "Accessibility", "Accesibilidad", ".policy-page article"]
 ];
 
 test.use({ channel: "chrome", javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
@@ -61,3 +62,20 @@ for (const [path, english, spanish, content] of paths) {
     expect(returned.searchParams.get("cache")).toBe("test");
   });
 }
+
+test("home explains quote-first paths and preserves distinct destinations", async ({ page }) => {
+  for (const [lang, title, price, expectedPaths] of [
+    ["en", "Choose your starting point.", "Quote after review · no public price", ["materials", "work", "scope"]],
+    ["es", "Elige por dónde empezar.", "Cotización después de revisar · sin precio público", ["materials", "work", "scope"]]
+  ]) {
+    await page.goto(base + "index.html?lang=" + lang + "&qa=packages&cache=test");
+    await expect(page.locator("#package-title")).toHaveText(title);
+    await expect(page.locator(".offer-price")).toHaveCount(3);
+    await expect(page.locator(".offer-price").first()).toHaveText(price);
+    const links = await page.locator(".home-grid > a").evaluateAll((anchors) => anchors.map((anchor) => anchor.getAttribute("href")));
+    expect(links.map((href) => new URL(href, base).searchParams.get("view"))).toEqual(expectedPaths);
+    expect(links[1]).toContain("filter=kitchen");
+    expect(links.join(" ")).not.toMatch(/\$|€|\bUSD\b/i);
+    expect(await page.locator('meta[name="description"]').getAttribute("content")).toBeTruthy();
+  }
+});
