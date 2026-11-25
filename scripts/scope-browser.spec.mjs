@@ -1,7 +1,16 @@
 import { test, expect } from "playwright/test";
+import worker from "../dist/server/index.js";
 
-const indexUrl = new URL("../dist/index.html", import.meta.url).href;
+const base = "https://morrow.example/r/morrow-mason-renovation/";
+const indexUrl = base + "index.html";
 test.use({ channel: "chrome" });
+test.beforeEach(async ({ context }) => {
+  await context.route("**/*", async (route) => {
+    if (!route.request().url().startsWith(base)) return route.abort();
+    const response = await worker.fetch(new Request(route.request().url(), { method: route.request().method() }));
+    await route.fulfill({ status: response.status, headers: Object.fromEntries(response.headers), body: await response.text() });
+  });
+});
 
 test("selected material samples travel to the scope and clear with the brief", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });

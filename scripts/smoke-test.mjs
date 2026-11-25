@@ -8,7 +8,6 @@ for (const file of required) readFileSync(new URL(file, root), "utf8");
 const html = readFileSync(new URL("index.html", root), "utf8");
 const js = readFileSync(new URL("site.js", root), "utf8");
 const css = readFileSync(new URL("styles.css", root), "utf8");
-const noScript = html.match(/<noscript>([\s\S]*?)<\/noscript>/)?.[1] || "";
 if (/\bun entrega\b|este vista previa|product vista previa|this vista previa/i.test(js)) {
   throw new Error("Mixed-language phrase or incorrect Spanish agreement");
 }
@@ -21,14 +20,6 @@ for (const phrase of ["openMenu", "Escape", "localDateString", "updateUrl", "cur
 }
 if (!js.includes("meta[name=\"description\"]") || !js.includes("description.content = entry[1]")) {
   throw new Error("Legal language changes must update the page description metadata");
-}
-if (!html.includes('<body class="no-js">') || !js.includes('document.body.classList.remove("no-js")') || !css.includes(".no-js #main-content { display: none; }")) {
-  throw new Error("No-JS fallback hydration guard missing");
-}
-for (const view of ["work", "materials", "scope"]) {
-  if (!noScript.includes(`id=\"no-script-${view}\"`) || !noScript.includes(`?view=${view}&amp;lang=en#no-script-${view}`)) {
-    throw new Error(`No-JS ${view} fallback destination missing`);
-  }
 }
 for (const phrase of ["scopeInvalidControls", "invalidateScopeSubmission", "aria-invalid", "Update this brief", "Actualizar este resumen"]) {
   if (!js.includes(phrase)) throw new Error(`Missing scope accessibility/state guard: ${phrase}`);
