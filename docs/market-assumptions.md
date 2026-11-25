@@ -20,6 +20,18 @@ stateful validation, responsive/accessibility work, policy gates, and official Q
 real scheduling, payments, permit verification, CRM/estimating integrations, photography production,
 domain, hosting fees, ongoing content operations, and legal review.
 
+## Proposed website packages for internal review
+
+The estimates are one-time website implementation costs. Remodeling labor, materials, permits and site work remain separately quoted. Each tier includes bilingual responsive layouts, keyboard review and deployment handoff.
+
+| Package | Planning effort | Proposed price | Scope and acceptance |
+| --- | ---: | ---: | --- |
+| Studio & Projects | 40 h | US$4,950 | Home, studio profile, curated project case studies and clear inquiry routing. Verify both languages, project navigation and keyboard access at mobile and desktop widths. |
+| Material & Scope Studio | 104 h | US$12,900 | Adds work filtering, a finish comparison board, and a local scope builder with an editable summary and downloadable handoff. This is the current preview. Verify language and history continuity, validation, and that editing invalidates the prior handoff. |
+| Renovation Planning Desk | 144 h | US$17,900 | Adds side-by-side room plans, a structured list of undecided material and scope choices, recoverable drafts for fictitious data, and a printable consultation handoff. Verify reload, reset, invalidation and print output. This tier requires additional development. |
+
+The 40 hours above the current preview allocate 12 h to room comparison, 8 h to tracking unresolved decisions, 8 h to draft recovery and reset, 5 h to print output, and 7 h to bilingual accessibility and regression QA. Each tier assumes approximately US$124/hour for design, engineering and QA. The vendor references below inform the workflow and ongoing platform costs. They are separate from the implementation estimate.
+
 ## Why this is deeper than a landing page
 
 - Home explains the studio promise and makes the quote-first boundary clear.
