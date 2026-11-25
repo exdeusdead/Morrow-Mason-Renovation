@@ -7,6 +7,7 @@ for (const file of required) readFileSync(new URL(file, root), "utf8");
 
 const html = readFileSync(new URL("index.html", root), "utf8");
 const js = readFileSync(new URL("site.js", root), "utf8");
+const build = readFileSync(new URL("build.mjs", import.meta.url), "utf8");
 const css = readFileSync(new URL("styles.css", root), "utf8");
 if (/\bun entrega\b|este vista previa|product vista previa|this vista previa/i.test(js)) {
   throw new Error("Mixed-language phrase or incorrect Spanish agreement");
@@ -14,6 +15,9 @@ if (/\bun entrega\b|este vista previa|product vista previa|this vista previa/i.t
 
 for (const phrase of ["Morrow &amp; Mason", "Material Lab", "Scope Builder", "Request a quote", "Precio por cotizar", "aria-pressed", "aria-live"]) {
   if (!html.includes(phrase) && !js.includes(phrase)) throw new Error(`Missing required product signal: ${phrase}`);
+}
+for (const phrase of ["data-package", "package-format", "package-deliverable", "package-destination", "package-cta", "Not a quote", "No es una cotización"]) {
+  if (!html.includes(phrase) && !js.includes(phrase) && !build.includes(phrase)) throw new Error(`Missing comparable package signal: ${phrase}`);
 }
 for (const phrase of ["openMenu", "Escape", "localDateString", "updateUrl", "currentFilter", "data-lang"]) {
   if (!js.includes(phrase)) throw new Error(`Missing interaction guard: ${phrase}`);

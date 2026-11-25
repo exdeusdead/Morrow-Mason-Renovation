@@ -50,18 +50,48 @@ function scopePreview(lang) {
   return '<section class="view-hero section-shell"><div><p class="eyebrow">' + esc(copy.eyebrow) +
     '</p><h1>' + esc(copy.title) + '</h1></div><div><p>' + esc(copy.lede) +
     '</p><p class="view-note">' + esc(copy.note) + '</p><p class="quote-format">' + esc(copy.priceNote) + '</p></div></section>' +
-    '<section class="view-content section-shell"><p>' + esc(lang === "es"
+    '<section class="view-content section-shell"><div class="static-brief-grid"><article class="static-brief-card"><p class="card-kicker">' +
+    esc(lang === "es" ? "Qué captura" : "What it captures") + '</p><h2>' + esc(lang === "es" ? "Una conversación mejor preparada" : "A better-prepared conversation") +
+    '</h2><p>' + esc(lang === "es" ? "Habitación, escala, tiempo, dirección y prioridades visibles antes de cualquier contacto real." : "Room, scale, timing, direction and priorities made visible before any real contact.") +
+    '</p></article><article class="static-brief-card"><p class="card-kicker">' + esc(lang === "es" ? "Entrega" : "Handoff") +
+    '</p><h2>' + esc(lang === "es" ? "Resumen local + TXT" : "Local summary + TXT") + '</h2><p>' + esc(lang === "es" ? "La versión con JavaScript permite preparar y descargar un resumen que permanece en este navegador." : "The JavaScript version prepares and downloads a summary that remains in this browser.") +
+    '</p></article><article class="static-brief-card"><p class="card-kicker">' + esc(lang === "es" ? "Límite" : "Boundary") +
+    '</p><h2>' + esc(lang === "es" ? "No es una cotización" : "Not a quote") + '</h2><p>' + esc(lang === "es" ? "No incluye obra, permisos, materiales, mano de obra, disponibilidad ni precio de proyecto." : "It does not include construction, permits, materials, labor, availability or a project price.") +
+    '</p></article></div><p class="static-js-note">' + esc(lang === "es"
       ? "Activa JavaScript para elegir la habitación, los materiales y las prioridades y preparar un resumen local."
       : "Enable JavaScript to choose the room, materials and priorities and prepare a local brief.") +
-    '</p><p>' + esc(PRODUCT_PRICE_LABELS[lang]) + '</p><a class="button button-quiet" href="?view=materials&amp;lang=' +
-    lang + '">' + esc(COPY[lang].nav.materials) + '</a></section>';
+    '</p><p class="quote-format">' + esc(PRODUCT_PRICE_LABELS[lang]) + '</p><div class="hero-actions"><a class="button button-quiet" href="?view=materials&amp;lang=' +
+    lang + '">' + esc(COPY[lang].nav.materials) + '</a><a class="text-link" href="?view=work&amp;filter=kitchen&amp;lang=' + lang + '">' + esc(COPY[lang].nav.work) + '</a></div></section>';
+}
+
+function packageSection(lang) {
+  const data = lang === "es" ? {
+    heading: "Tres rutas comparables para empezar",
+    intro: "Cada ruta produce claridad para una conversación de renovación. No son precios de obra ni incluyen materiales, permisos, mano de obra, compras o entrega.",
+    price: "Cotización después de revisar · sin precio público",
+    cards: [
+      ["Dirección de materiales", "Formato: tablero de decisiones + preguntas para muestras", "Entrega: tablero local con una breve razón de diseño", "Destino: revisión del propietario / diseño", "Ejemplo: roble cálido, caliza marfil y azulejo verde salvia", "Comparar dirección de materiales", "?view=materials&lang=es"],
+      ["Dirección de habitación", "Formato: estudio de habitación filtrable", "Entrega: decisiones de espacio y sus compromisos", "Destino: conversación con propietario / arquitecto", "Ejemplo: cocina Juniper — almacenamiento, luz y circulación matinal", "Abrir dirección de habitación", "?view=work&filter=kitchen&lang=es"],
+      ["Resumen de alcance", "Formato: resumen local + descarga TXT", "Entrega: habitación, escala, tiempo y prioridades", "Destino: revisión del propietario antes de una cotización real", "Ejemplo: renovación centrada en luz, almacenamiento o accesibilidad", "Crear resumen local", "?view=scope&lang=es"]
+    ]
+  } : {
+    heading: "Three comparable ways to start",
+    intro: "Each path creates clarity for a renovation conversation. These are not construction prices and exclude materials, permits, labor, purchasing and delivery.",
+    price: "Quote after review · no public price",
+    cards: [
+      ["Material direction", "Format: decision board + sample questions", "Deliverable: local board with a short design rationale", "Destination: owner / design review", "Example: warm oak, ivory limestone and quiet sage tile", "Compare material direction", "?view=materials&lang=en"],
+      ["Room direction", "Format: filtered room study", "Deliverable: room decisions and their trade-offs", "Destination: owner / architect conversation", "Example: Juniper kitchen — storage, light and a generous morning path", "Open room direction", "?view=work&filter=kitchen&lang=en"],
+      ["Scope brief", "Format: local brief + TXT export", "Deliverable: room, scale, timing and priorities", "Destination: owner review before any real quote", "Example: a renovation shaped around light, storage or accessibility", "Build a local brief", "?view=scope&lang=en"]
+    ]
+  };
+  return '<section class="detail-packages section-shell" aria-labelledby="detail-packages-title"><div class="package-intro"><div><span class="section-index">03</span><h2 id="detail-packages-title">' + esc(data.heading) + '</h2></div><p>' + esc(data.intro) + '</p></div><div class="detail-package-grid">' + data.cards.map((card, index) => '<article class="detail-package-card" data-package="' + (index + 1) + '"><p class="card-kicker">' + esc(card[0]) + '</p><p class="offer-price" data-package-price="quote">' + esc(data.price) + '</p><dl class="package-facts"><div><dt>' + esc(lang === "es" ? "Formato" : "Format") + '</dt><dd class="package-format">' + esc(card[1].replace(/^Formato: |^Format: /, "")) + '</dd></div><div><dt>' + esc(lang === "es" ? "Entrega" : "Deliverable") + '</dt><dd class="package-deliverable">' + esc(card[2].replace(/^Entrega: |^Deliverable: /, "")) + '</dd></div><div><dt>' + esc(lang === "es" ? "Destino" : "Destination") + '</dt><dd class="package-destination">' + esc(card[3].replace(/^Destino: |^Destination: /, "")) + '</dd></div></dl><p class="feature-detail"><strong>' + esc(lang === "es" ? "Ejemplo:" : "Example:") + '</strong> ' + esc(card[4].replace(/^Ejemplo: |^Example: /, "")) + '</p><a class="button button-quiet package-cta" data-package-cta="' + (index + 1) + '" href="' + card[6] + '">' + esc(card[5]) + '</a></article>').join("") + '</div></section>';
 }
 
 const documents = {};
 for (const lang of ["en", "es"]) {
   state.language = lang;
   const view = (name, body) => shell(templates.home, lang, name, body, viewMetadata(name, lang));
-  const documentsForLanguage = { home: view("home", source.renderHome()), scope: view("scope", scopePreview(lang)), work: {}, materials: {}, legal: {} };
+  const documentsForLanguage = { home: view("home", source.renderHome() + packageSection(lang)), scope: view("scope", scopePreview(lang)), work: {}, materials: {}, legal: {} };
   for (const filter of ["all", ...WORK.map((item) => item.type)]) {
     state.currentFilter = filter;
     documentsForLanguage.work[filter] = view("work", source.renderWork(false));

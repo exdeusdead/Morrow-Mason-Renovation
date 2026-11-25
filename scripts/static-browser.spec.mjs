@@ -70,12 +70,32 @@ test("home explains quote-first paths and preserves distinct destinations", asyn
   ]) {
     await page.goto(base + "index.html?lang=" + lang + "&qa=packages&cache=test");
     await expect(page.locator("#package-title")).toHaveText(title);
-    await expect(page.locator(".offer-price")).toHaveCount(3);
-    await expect(page.locator(".offer-price").first()).toHaveText(price);
+    await expect(page.locator(".home-grid .offer-price")).toHaveCount(3);
+    await expect(page.locator(".home-grid .offer-price").first()).toHaveText(price);
+    await expect(page.locator("[data-package]")).toHaveCount(3);
+    await expect(page.locator(".package-format")).toHaveCount(3);
+    await expect(page.locator(".package-deliverable")).toHaveCount(3);
+    await expect(page.locator(".package-destination")).toHaveCount(3);
+    await expect(page.locator(".package-cta")).toHaveCount(3);
+    const packageHrefs = await page.locator("[data-package]").evaluateAll((cards) => cards.map((card) => card.querySelector(".package-cta")?.getAttribute("href")));
+    expect(new Set(packageHrefs).size).toBe(3);
     const links = await page.locator(".home-grid > a").evaluateAll((anchors) => anchors.map((anchor) => anchor.getAttribute("href")));
     expect(links.map((href) => new URL(href, base).searchParams.get("view"))).toEqual(expectedPaths);
     expect(links[1]).toContain("filter=kitchen");
     expect(links.join(" ")).not.toMatch(/\$|€|\bUSD\b/i);
     expect(await page.locator('meta[name="description"]').getAttribute("content")).toBeTruthy();
+  }
+});
+
+test("scope fallback explains the local handoff and construction boundary", async ({ page }) => {
+  for (const [lang, heading, boundary] of [
+    ["en", "A better-prepared conversation", "Not a quote"],
+    ["es", "Una conversación mejor preparada", "No es una cotización"]
+  ]) {
+    await page.goto(base + "index.html?view=scope&lang=" + lang + "&qa=scope&cache=static");
+    await expect(page.getByRole("heading", { name: heading })).toBeVisible();
+    await expect(page.getByRole("heading", { name: boundary })).toBeVisible();
+    await expect(page.locator(".static-js-note")).toBeVisible();
+    await expect(page.locator(".static-brief-grid")).toBeVisible();
   }
 });
