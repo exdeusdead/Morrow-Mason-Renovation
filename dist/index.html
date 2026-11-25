@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="styles.css" />
     <script defer src="site.js"></script>
   </head>
-  <body>
+  <body class="no-js">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header">
       <a class="brand" href="?view=home&amp;lang=en" data-view-link="home" aria-label="Morrow &amp; Mason home">
@@ -28,6 +28,34 @@
         <a class="button button-small button-dark" href="?view=scope&amp;lang=en" data-view-link="scope">Build a scope</a>
       </div>
     </header>
+    <noscript>
+      <section class="no-script-fallback section-shell" aria-labelledby="noScriptTitle">
+        <p class="eyebrow">STATIC FALLBACK / NO JAVASCRIPT</p>
+        <h1 id="noScriptTitle">A readable renovation planning preview.</h1>
+        <p>JavaScript is disabled, so the interactive views are not hydrated. These summaries keep the product story and quote-first boundary visible without collecting a request, payment or project details.</p>
+        <div class="no-script-grid">
+          <article id="no-script-work" class="no-script-card">
+            <p class="card-kicker">Selected work</p>
+            <h2>Quiet moves. Strong rooms.</h2>
+            <p>Review illustrative kitchen, bath and living directions without treating them as completed client work.</p>
+            <a class="text-link" href="?view=work&amp;lang=en#no-script-work">Open the work fallback</a>
+          </article>
+          <article id="no-script-materials" class="no-script-card">
+            <p class="card-kicker">Material Lab</p>
+            <h2>Hold the finish in your mind.</h2>
+            <p>Compare cabinet, countertop and tile directions before a real room conversation.</p>
+            <a class="text-link" href="?view=materials&amp;lang=en#no-script-materials">Open the materials fallback</a>
+          </article>
+          <article id="no-script-scope" class="no-script-card">
+            <p class="card-kicker">Scope Builder</p>
+            <h2>Turn a feeling into a brief.</h2>
+            <p>Use the hydrated builder for local selections; no quote, contract, booking or payment is created here.</p>
+            <a class="text-link" href="?view=scope&amp;lang=en#no-script-scope">Open the scope fallback</a>
+          </article>
+        </div>
+        <p class="no-script-note">For the full bilingual interactive experience, enable JavaScript. <a href="?view=home&amp;lang=en#main-content">Return to the home preview</a>.</p>
+      </section>
+    </noscript>
     <main id="main-content">
       <section class="hero section-shell">
         <div class="hero-copy"><p class="eyebrow">RENOVATION, WITH ROOM TO THINK</p><h1>Make the home feel inevitable.</h1><p class="hero-lede">Morrow &amp; Mason turns renovation decisions into a clear, tactile path — from the first room note to a brief worth building from.</p><div class="hero-actions"><a class="button button-primary" href="?view=scope&amp;lang=en" data-view-link="scope">Build a project scope</a><a class="text-link" href="?view=work&amp;lang=en" data-view-link="work">See the work</a></div><p class="demo-note">Preview experience · Quote-first · No real booking or payment</p></div>
