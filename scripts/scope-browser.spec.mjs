@@ -144,3 +144,22 @@ test.describe("Morrow scope builder", () => {
   });
   }
 });
+
+test("downloads the completed scope locally and hides export after edits", async ({ page }) => {
+  await page.goto(`${indexUrl}?view=scope&lang=es&cabinet=oak&counter=oak&tile=sage`);
+  const exportButton = page.getByRole("button", { name: "Descargar resumen", includeHidden: true });
+  await expect(exportButton).toBeHidden();
+  for (const name of ["room", "scale", "timeline"]) {
+    await page.locator(`#scope-${name}`).selectOption({ index: 1 });
+  }
+  await page.locator('[name="details"]').fill("Revisar luz natural");
+  await page.locator('#scope-form button[type="submit"]').click();
+  const [download] = await Promise.all([page.waitForEvent("download"), exportButton.click()]);
+  expect(download.suggestedFilename()).toBe("morrow-mason-scope.txt");
+  const { readFile } = await import("node:fs/promises");
+  const content = await readFile(await download.path(), "utf8");
+  expect(content).toContain("Revisar luz natural");
+  expect(content).toContain("Roble cálido");
+  await page.locator('[name="details"]').fill("Revisar iluminación nocturna");
+  await expect(exportButton).toBeHidden();
+});

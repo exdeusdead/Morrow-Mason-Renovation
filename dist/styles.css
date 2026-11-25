@@ -206,3 +206,6 @@ h3 { font-size: clamp(1.4rem, 2vw, 2rem); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+#scope-download { min-height: 2.75rem; margin-top: .75rem; }
+#scope-download[hidden] { display: none; }

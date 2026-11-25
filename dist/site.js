@@ -137,7 +137,7 @@ function renderScope() {
   const heading = state.scopeSubmitted ? (state.language === "es" ? "Listo para revisar." : "Ready to review.") : (state.language === "es" ? "La forma toma forma aquí." : "The shape starts here.");
   const status = state.scopeSubmitted ? s.statusSuccess : s.statusInitial;
   const submitLabel = state.scopeSubmitted ? s.update : s.submit;
-  return '<section class="view-hero section-shell"><div><p class="eyebrow">' + s.eyebrow + '</p><h1>' + s.title + '</h1></div><div><p>' + s.lede + '</p><p class="view-note">' + s.note + '</p></div></section><section class="view-content section-shell scope-layout"><form class="scope-panel scope-form" id="scope-form" novalidate><div class="field-grid"><label class="field"><span class="field-label">' + s.room + '</span><select id="scope-room" name="room" required aria-describedby="scope-status"><option value="">' + s.choose + '</option>' + roomOptions + '</select></label><label class="field"><span class="field-label">' + s.scale + '</span><select id="scope-scale" name="scale" required aria-describedby="scope-status"><option value="">' + s.choose + '</option>' + scaleOptions + '</select></label></div><label class="field"><span class="field-label">' + s.timeline + '</span><select id="scope-timeline" name="timeline" required aria-describedby="scope-status"><option value="">' + s.choose + '</option>' + timeOptions + '</select></label><label class="field"><span class="field-label">' + s.details + '</span><textarea name="details" placeholder="' + s.detailsPlaceholder + '">' + esc(state.scope.details) + '</textarea><span class="field-help">' + (state.language === "es" ? "No incluyas dirección, teléfono ni información sensible en esta vista previa." : "Do not include an address, phone number or sensitive information in this preview.") + '</span></label><fieldset class="check-list"><legend class="field-label">' + s.priorities + '</legend>' + priorities + '</fieldset><p class="form-status" id="scope-status" role="status" aria-live="polite" aria-atomic="true">' + status + '</p><div class="hero-actions"><button class="button button-primary" type="submit">' + submitLabel + '</button><button class="button button-quiet" type="button" id="scope-clear">' + s.clear + '</button></div></form><aside class="summary-card" aria-live="polite"><p class="eyebrow">' + s.summary + '</p><h2>' + heading + '</h2>' + summaryItems(c) + '<p class="summary-note">' + s.recovery + '</p></aside></section>'; }
+  return '<section class="view-hero section-shell"><div><p class="eyebrow">' + s.eyebrow + '</p><h1>' + s.title + '</h1></div><div><p>' + s.lede + '</p><p class="view-note">' + s.note + '</p></div></section><section class="view-content section-shell scope-layout"><form class="scope-panel scope-form" id="scope-form" novalidate><div class="field-grid"><label class="field"><span class="field-label">' + s.room + '</span><select id="scope-room" name="room" required aria-describedby="scope-status"><option value="">' + s.choose + '</option>' + roomOptions + '</select></label><label class="field"><span class="field-label">' + s.scale + '</span><select id="scope-scale" name="scale" required aria-describedby="scope-status"><option value="">' + s.choose + '</option>' + scaleOptions + '</select></label></div><label class="field"><span class="field-label">' + s.timeline + '</span><select id="scope-timeline" name="timeline" required aria-describedby="scope-status"><option value="">' + s.choose + '</option>' + timeOptions + '</select></label><label class="field"><span class="field-label">' + s.details + '</span><textarea name="details" placeholder="' + s.detailsPlaceholder + '">' + esc(state.scope.details) + '</textarea><span class="field-help">' + (state.language === "es" ? "No incluyas dirección, teléfono ni información sensible en esta vista previa." : "Do not include an address, phone number or sensitive information in this preview.") + '</span></label><fieldset class="check-list"><legend class="field-label">' + s.priorities + '</legend>' + priorities + '</fieldset><p class="form-status" id="scope-status" role="status" aria-live="polite" aria-atomic="true">' + status + '</p><div class="hero-actions"><button class="button button-primary" type="submit">' + submitLabel + '</button><button class="button button-quiet" type="button" id="scope-clear">' + s.clear + '</button></div></form><aside class="summary-card" aria-live="polite"><p class="eyebrow">' + s.summary + '</p><h2>' + heading + '</h2>' + summaryItems(c) + '<p class="summary-note">' + s.recovery + '</p><button id="scope-download" type="button" class="button button-primary"' + (state.scopeSubmitted ? '' : ' hidden') + '>' + (state.language === 'es' ? 'Descargar resumen' : 'Download summary') + '</button></aside></section>'; }
 
 function scopeInvalidControls(form) {
   const invalid = [];
@@ -156,6 +156,8 @@ function scopeInvalidControls(form) {
 }
 
 function resetScopeDraftView() {
+  const download = document.getElementById("scope-download");
+  if (download) download.hidden = true;
   const c = COPY[state.language];
   const status = document.getElementById("scope-status");
   if (status) {
@@ -256,6 +258,21 @@ function bindInteractions() {
       successStatus.tabIndex = -1;
       successStatus.focus();
     }
+  });
+  document.getElementById("scope-download")?.addEventListener("click", () => {
+    if (!state.scopeSubmitted) return;
+    const card = document.querySelector(".summary-card");
+    const rows = Array.from(card.querySelectorAll(".summary-item")).map((item) =>
+      Array.from(item.children).map((child) => child.textContent.trim()).join(": ")
+    );
+    const material = card.querySelector(".scope-material-summary")?.textContent.trim();
+    const content = ["Morrow & Mason", ...rows, ...(material ? [material] : []), "", card.querySelector(".summary-note").textContent.trim()].join("\n");
+    const url = URL.createObjectURL(new Blob([content], { type: "text/plain;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "morrow-mason-scope.txt";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
   document.getElementById("scope-clear")?.addEventListener("click", () => { state.scopeSubmitted = false; state.scope = { room: "", scale: "", timeline: "", details: "", priorities: [] }; const url = new URL(location.href); MATERIAL_GROUPS.forEach((group) => url.searchParams.delete(group)); history.replaceState(history.state, "", url); renderApp(); });
 }
