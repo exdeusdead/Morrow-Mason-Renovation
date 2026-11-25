@@ -18,6 +18,9 @@ for (const phrase of ["Morrow &amp; Mason", "Material Lab", "Scope Builder", "Re
 for (const phrase of ["openMenu", "Escape", "localDateString", "updateUrl", "currentFilter", "data-lang"]) {
   if (!js.includes(phrase)) throw new Error(`Missing interaction guard: ${phrase}`);
 }
+if (!js.includes("meta[name=\"description\"]") || !js.includes("description.content = entry[1]")) {
+  throw new Error("Legal language changes must update the page description metadata");
+}
 for (const phrase of ["scopeInvalidControls", "invalidateScopeSubmission", "aria-invalid", "Update this brief", "Actualizar este resumen"]) {
   if (!js.includes(phrase)) throw new Error(`Missing scope accessibility/state guard: ${phrase}`);
 }
