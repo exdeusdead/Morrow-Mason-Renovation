@@ -187,3 +187,23 @@ test("material board is shareable and restores browser history", async ({ page }
     await expect(page.locator(selector).first()).toHaveCSS("font-size", "14px");
   }
 });
+
+test("only the changed board sample animates and reduced motion skips it", async ({ page }) => {
+  await page.addInitScript(() => {
+    const animate = Element.prototype.animate;
+    window.animatedSamples = [];
+    Element.prototype.animate = function (...args) {
+      window.animatedSamples.push(this.closest("[data-board-sample]")?.dataset.boardSample);
+      return animate.apply(this, args);
+    };
+  });
+  for (const reducedMotion of ["no-preference", "reduce"]) {
+    await page.emulateMedia({ reducedMotion });
+    await page.goto(`${indexUrl}?view=materials&lang=es`);
+    const linen = page.locator('[data-material-group="cabinet"][data-material="linen"]');
+    await linen.click();
+    await expect(linen).toBeFocused();
+    await expect(linen).toHaveAttribute("aria-pressed", "true");
+    expect(await page.evaluate(() => window.animatedSamples)).toEqual(reducedMotion === "reduce" ? [] : ["cabinet"]);
+  }
+});

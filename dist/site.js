@@ -110,8 +110,8 @@ function renderMaterials() {
       <span class="field-label" id="material-${group}-label">${copy[group]}</span>
       <div class="swatch-row">${Object.keys(MATERIALS[group]).map((key) => materialButton(group, key)).join("")}</div>
     </div>`).join("");
-  const samples = selected.map((item) => `
-    <div class="board-material"><img src="${item.image}" alt=""><span>${item.label[language]}</span></div>`).join("");
+  const samples = selected.map((item, index) => `
+    <div class="board-material" data-board-sample="${groups[index]}"><img src="${item.image}" alt=""><span>${item.label[language]}</span></div>`).join("");
   const notes = groups.map((group, index) => `
     <div><dt>${selected[index].label[language]}</dt><dd>${MATERIAL_GUIDANCE[group][materials[group]][language]}</dd></div>`).join("");
   return `
@@ -243,7 +243,20 @@ function bindInteractions() {
   const toggle = document.querySelector(".menu-toggle"); if (toggle && !toggle.dataset.bound) { toggle.dataset.bound = "true"; toggle.addEventListener("click", () => state.menuOpen ? closeMenu(false) : openMenu()); }
   document.querySelectorAll("#primary-nav a").forEach((linkElement) => { if (!linkElement.dataset.bound) { linkElement.dataset.bound = "true"; linkElement.addEventListener("click", () => closeMenu(false)); } });
   document.querySelectorAll("[data-filter]").forEach((button) => button.addEventListener("click", () => { state.currentFilter = button.dataset.filter; updateUrl(false); renderApp(); }));
-  document.querySelectorAll("[data-material-group]").forEach((button) => button.addEventListener("click", () => { const { materialGroup, material } = button.dataset; if (state.materials[materialGroup] === material) return; state.materials[materialGroup] = material; updateUrl(false); renderApp(); document.querySelector(`[data-material-group="${materialGroup}"][data-material="${material}"]`)?.focus({ preventScroll: true }); }));
+  document.querySelectorAll("[data-material-group]").forEach((button) => button.addEventListener("click", () => {
+    const { materialGroup, material } = button.dataset;
+    if (state.materials[materialGroup] === material) return;
+    state.materials[materialGroup] = material;
+    updateUrl(false);
+    renderApp();
+    if (matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+      document.querySelector(`[data-board-sample="${materialGroup}"] img`)?.animate(
+        [{ opacity: 0.55 }, { opacity: 1 }],
+        { duration: 180, easing: "ease-out" }
+      );
+    }
+    document.querySelector(`[data-material-group="${materialGroup}"][data-material="${material}"]`)?.focus({ preventScroll: true });
+  }));
   const language = document.getElementById("language-select"); if (language && !language.dataset.bound) { language.dataset.bound = "true"; language.addEventListener("change", () => { state.language = language.value === "es" ? "es" : "en"; safeStorage("set", "morrow-language", state.language); updateUrl(true); const page = document.getElementById("main-content")?.dataset.policyPage; if (page) renderPolicyPage(page); else renderApp(); }); }
   const form = document.getElementById("scope-form");
   const handleScopeFieldChange = (event) => {
