@@ -63,10 +63,20 @@ for (const [path, english, spanish, content] of paths) {
   });
 }
 
+test("Spanish legal aliases remain a single-language no-JS document", async ({ page }) => {
+  for (const path of ["policies-es.html", "privacy-es.html", "terms-es.html", "cookies-es.html", "scope-es.html", "accessibility-es.html"]) {
+    await page.goto(base + path + "?qa=legal&cache=static");
+    await expect(page.locator("html")).toHaveAttribute("lang", "es");
+    await expect(page.locator("main[data-policy-page]")).toContainText("Pre-lanzamiento · no vigente");
+    await expect(page.locator("main[data-policy-page] article").first()).toBeVisible();
+    await expect(page.locator("main[data-policy-page]")).not.toContainText("Pre-launch · not effective");
+  }
+});
+
 test("home explains quote-first paths and preserves distinct destinations", async ({ page }) => {
   for (const [lang, title, price, expectedPaths] of [
-    ["en", "Choose your starting point.", "Quote after review · no public price", ["materials", "work", "scope"]],
-    ["es", "Elige por dónde empezar.", "Cotización después de revisar · sin precio público", ["materials", "work", "scope"]]
+    ["en", "Choose the website scope to review.", "Quote after review · no public price", ["materials", "work", "scope"]],
+    ["es", "Elige el alcance web que quieres revisar.", "Cotización después de revisar · sin precio público", ["materials", "work", "scope"]]
   ]) {
     await page.goto(base + "index.html?lang=" + lang + "&qa=packages&cache=test");
     await expect(page.locator("#package-title")).toHaveText(title);

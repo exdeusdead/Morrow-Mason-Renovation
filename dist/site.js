@@ -25,6 +25,45 @@ const COPY = {
   }
 };
 
+COPY.en.title = "Morrow & Mason | Renovation Website Preview";
+COPY.en.hero = {
+  eyebrow: "WEBSITE PRODUCT PREVIEW FOR RENOVATION STUDIOS · QUOTE-FIRST",
+  title: "A calmer website for planning a renovation.",
+  lede: "Morrow & Mason is a bilingual website concept for independent renovation studios. It shows how a visitor can review work, compare materials and prepare a local project brief; it is not a renovation quote or construction service.",
+  primary: "Review website scope",
+  secondary: "See the website examples",
+  note: "Website product preview · No renovation booking, quote or payment"
+};
+COPY.en.home = {
+  ...COPY.en.home,
+  introTitle: "The website should make the next renovation decision easier.",
+  introBody: "This concept gives an independent renovation studio a clearer public story: show the work, explain material choices and prepare a better conversation before any site visit.",
+  packagesTitle: "Choose the website scope to review.",
+  packagesBody: "Each path is a website implementation route. Pricing remains quote-only until the owner approves a public offer; construction, materials, permits and field work stay outside this product preview.",
+  materialPackage: "WEBSITE PACKAGE · MATERIAL DIRECTION",
+  workPackage: "WEBSITE PACKAGE · ROOM DIRECTION",
+  scopePackage: "WEBSITE PACKAGE · SCOPE BRIEF"
+};
+COPY.es.title = "Morrow & Mason | Vista previa de website de renovación";
+COPY.es.hero = {
+  eyebrow: "VISTA PREVIA DE WEBSITE PARA ESTUDIOS DE RENOVACIÓN · PRIMERO COTIZAR",
+  title: "Un website más sereno para planear una renovación.",
+  lede: "Morrow & Mason es un concepto web bilingüe para estudios independientes de renovación. Muestra cómo un visitante puede revisar proyectos, comparar materiales y preparar un resumen local; no es una cotización de obra ni un servicio de construcción.",
+  primary: "Revisar alcance web",
+  secondary: "Ver ejemplos del website",
+  note: "Vista previa de producto web · Sin reserva, cotización ni pago de renovación"
+};
+COPY.es.home = {
+  ...COPY.es.home,
+  introTitle: "El website debe hacer más fácil la siguiente decisión de renovación.",
+  introBody: "Este concepto da a un estudio independiente una historia pública más clara: mostrar el trabajo, explicar los materiales y preparar una mejor conversación antes de cualquier visita.",
+  packagesTitle: "Elige el alcance web que quieres revisar.",
+  packagesBody: "Cada ruta es una implementación web. El precio queda sujeto a cotización hasta que el propietario apruebe una oferta pública; obra, materiales, permisos y trabajo de campo quedan fuera de esta vista previa.",
+  materialPackage: "PAQUETE WEB · DIRECCIÓN DE MATERIALES",
+  workPackage: "PAQUETE WEB · DIRECCIÓN DE HABITACIÓN",
+  scopePackage: "PAQUETE WEB · RESUMEN DE ALCANCE"
+};
+
 const WORK = [
   { type: "kitchen", image: "assets/kitchen.svg", title: { en: "Juniper kitchen", es: "Cocina Juniper" }, body: { en: "Oak, limestone and a more generous morning path.", es: "Roble, piedra caliza y una circulación matinal más generosa." }, tags: { en: ["Oak", "Storage", "Warm light"], es: ["Roble", "Almacenamiento", "Luz cálida"] } },
   { type: "bath", image: "assets/bathroom.svg", title: { en: "Clay bath retreat", es: "Retiro de baño Clay" }, body: { en: "A quieter palette with a tactile, grounded edge.", es: "Una paleta serena con una textura táctil y arraigada." }, tags: { en: ["Limestone", "Calm", "Texture"], es: ["Caliza", "Calma", "Textura"] } },

@@ -4,7 +4,10 @@ const views = ["home", "work", "materials", "scope"];
 function pageFor(path, url, lang) {
   const pages = documents[lang];
   if (path !== "/" && path !== "/index.html") {
-    return Object.hasOwn(pages.legal, path.slice(1)) ? pages.legal[path.slice(1)] : null;
+    const filename = path.slice(1);
+    const legalAlias = filename.match(/^(policies|privacy|terms|cookies|scope|accessibility)-es\.html$/);
+    if (legalAlias) return documents.es.legal[legalAlias[1] + ".html"] || null;
+    return Object.hasOwn(pages.legal, filename) ? pages.legal[filename] : null;
   }
   const view = url.searchParams.get("view");
   if (view === "scope") return pages.scope;
@@ -54,7 +57,7 @@ export default {
     if (Object.hasOwn(assets, path)) {
       return new Response(head ? null : assets[path].body, { headers: { "Content-Type": assets[path].type } });
     }
-    const language = url.searchParams.get("lang") === "es" ? "es" : "en";
+    const language = url.searchParams.get("lang") === "es" || /-(?:es)\.html$/i.test(url.pathname) ? "es" : "en";
     const page = pageFor(path, url, language);
     if (!page) return new Response(null, { status: 404 });
     return new Response(head ? null : withNavigationContext(page, url, language), { headers: {

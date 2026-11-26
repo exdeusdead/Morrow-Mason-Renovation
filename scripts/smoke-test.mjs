@@ -36,6 +36,11 @@ if (/href=["']\/(?!\/)/.test(html) || /src=["']\/(?!\/)/.test(html)) throw new E
 for (const file of ["policies.html", "privacy.html", "terms.html", "cookies.html", "scope.html", "accessibility.html"]) {
   const body = readFileSync(new URL(file, root), "utf8");
   if (!body.includes("data-policy-page") || !js.includes("Pre-launch") || !js.includes("not effective")) throw new Error(`Legal gate missing in ${file}`);
+  if (!/<main[^>]*data-policy-page="[^"]+">[\s\S]*<article/.test(body)) throw new Error(`Static legal fallback missing in ${file}`);
+}
+for (const file of ["policies-es.html", "privacy-es.html", "terms-es.html", "cookies-es.html", "scope-es.html", "accessibility-es.html"]) {
+  const body = readFileSync(new URL(file, root), "utf8");
+  if (!body.includes('<html lang="es">') || !/<main[^>]*data-policy-page="[^"]+">[\s\S]*<article/.test(body)) throw new Error(`Spanish static legal fallback missing in ${file}`);
 }
 const assets = readdirSync(new URL("assets/", root));
 if (assets.filter((name) => name.endsWith(".svg")).length < 6) throw new Error("Expected local visual asset system");

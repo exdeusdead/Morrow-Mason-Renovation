@@ -67,24 +67,24 @@ function scopePreview(lang) {
 function packageSection(lang) {
   const data = lang === "es" ? {
     heading: "Tres rutas comparables para empezar",
-    intro: "Cada ruta produce claridad para una conversación de renovación. No son precios de obra ni incluyen materiales, permisos, mano de obra, compras o entrega.",
+    intro: "Cada ruta es una implementación web para que un estudio de renovación explique decisiones y prepare conversaciones. La cotización sigue pendiente de aprobación; no son precios de obra ni incluyen materiales, permisos, mano de obra, compras o entrega.",
     price: "Cotización después de revisar · sin precio público",
     cards: [
-      ["Dirección de materiales", "Formato: tablero de decisiones + preguntas para muestras", "Entrega: tablero local con una breve razón de diseño", "Destino: revisión del propietario / diseño", "Ejemplo: roble cálido, caliza marfil y azulejo verde salvia", "Comparar dirección de materiales", "?view=materials&lang=es"],
-      ["Dirección de habitación", "Formato: estudio de habitación filtrable", "Entrega: decisiones de espacio y sus compromisos", "Destino: conversación con propietario / arquitecto", "Ejemplo: cocina Juniper — almacenamiento, luz y circulación matinal", "Abrir dirección de habitación", "?view=work&filter=kitchen&lang=es"],
-      ["Resumen de alcance", "Formato: resumen local + descarga TXT", "Entrega: habitación, escala, tiempo y prioridades", "Destino: revisión del propietario antes de una cotización real", "Ejemplo: renovación centrada en luz, almacenamiento o accesibilidad", "Crear resumen local", "?view=scope&lang=es"]
+      ["Dirección de materiales", "Formato: tablero de decisiones + preguntas para muestras", "Entrega: tablero local con una breve razón de diseño", "Destino: revisión del propietario / diseño", "Ejemplo: roble cálido, caliza marfil y azulejo verde salvia", "No incluye: diseño final, compras, muestras físicas, proveedor, obra ni mantenimiento", "Comparar dirección de materiales", "?view=materials&lang=es"],
+      ["Dirección de habitación", "Formato: estudio de habitación filtrable", "Entrega: decisiones de espacio y sus compromisos", "Destino: conversación con propietario / arquitecto", "Ejemplo: cocina Juniper — almacenamiento, luz y circulación matinal", "No incluye: planos técnicos, permisos, contratistas, obra, compras ni supervisión", "Abrir dirección de habitación", "?view=work&filter=kitchen&lang=es"],
+      ["Resumen de alcance", "Formato: resumen local + descarga TXT", "Entrega: habitación, escala, tiempo y prioridades", "Destino: revisión del propietario antes de una cotización real", "Ejemplo: renovación centrada en luz, almacenamiento o accesibilidad", "No incluye: cotización de obra, disponibilidad, permisos, pagos, proveedores ni reserva", "Crear resumen local", "?view=scope&lang=es"]
     ]
   } : {
     heading: "Three comparable ways to start",
-    intro: "Each path creates clarity for a renovation conversation. These are not construction prices and exclude materials, permits, labor, purchasing and delivery.",
+    intro: "Each path is a website implementation route for a renovation studio to explain decisions and prepare better conversations. Pricing remains owner-approved quote-only; these are not construction prices and exclude materials, permits, labor, purchasing and delivery.",
     price: "Quote after review · no public price",
     cards: [
-      ["Material direction", "Format: decision board + sample questions", "Deliverable: local board with a short design rationale", "Destination: owner / design review", "Example: warm oak, ivory limestone and quiet sage tile", "Compare material direction", "?view=materials&lang=en"],
-      ["Room direction", "Format: filtered room study", "Deliverable: room decisions and their trade-offs", "Destination: owner / architect conversation", "Example: Juniper kitchen — storage, light and a generous morning path", "Open room direction", "?view=work&filter=kitchen&lang=en"],
-      ["Scope brief", "Format: local brief + TXT export", "Deliverable: room, scale, timing and priorities", "Destination: owner review before any real quote", "Example: a renovation shaped around light, storage or accessibility", "Build a local brief", "?view=scope&lang=en"]
+      ["Material direction", "Format: decision board + sample questions", "Deliverable: local board with a short design rationale", "Destination: owner / design review", "Example: warm oak, ivory limestone and quiet sage tile", "Not included: final design, purchasing, physical samples, vendor work, construction or maintenance", "Compare material direction", "?view=materials&lang=en"],
+      ["Room direction", "Format: filtered room study", "Deliverable: room decisions and their trade-offs", "Destination: owner / architect conversation", "Example: Juniper kitchen — storage, light and a generous morning path", "Not included: technical plans, permits, contractors, construction, purchasing or site supervision", "Open room direction", "?view=work&filter=kitchen&lang=en"],
+      ["Scope brief", "Format: local brief + TXT export", "Deliverable: room, scale, timing and priorities", "Destination: owner review before any real quote", "Example: a renovation shaped around light, storage or accessibility", "Not included: construction quote, availability, permits, payments, vendors or booking", "Build a local brief", "?view=scope&lang=en"]
     ]
   };
-  return '<section class="detail-packages section-shell" aria-labelledby="detail-packages-title"><div class="package-intro"><div><span class="section-index">03</span><h2 id="detail-packages-title">' + esc(data.heading) + '</h2></div><p>' + esc(data.intro) + '</p></div><div class="detail-package-grid">' + data.cards.map((card, index) => '<article class="detail-package-card" data-package="' + (index + 1) + '"><p class="card-kicker">' + esc(card[0]) + '</p><p class="offer-price" data-package-price="quote">' + esc(data.price) + '</p><dl class="package-facts"><div><dt>' + esc(lang === "es" ? "Formato" : "Format") + '</dt><dd class="package-format">' + esc(card[1].replace(/^Formato: |^Format: /, "")) + '</dd></div><div><dt>' + esc(lang === "es" ? "Entrega" : "Deliverable") + '</dt><dd class="package-deliverable">' + esc(card[2].replace(/^Entrega: |^Deliverable: /, "")) + '</dd></div><div><dt>' + esc(lang === "es" ? "Destino" : "Destination") + '</dt><dd class="package-destination">' + esc(card[3].replace(/^Destino: |^Destination: /, "")) + '</dd></div></dl><p class="feature-detail"><strong>' + esc(lang === "es" ? "Ejemplo:" : "Example:") + '</strong> ' + esc(card[4].replace(/^Ejemplo: |^Example: /, "")) + '</p><a class="button button-quiet package-cta" data-package-cta="' + (index + 1) + '" href="' + card[6] + '">' + esc(card[5]) + '</a></article>').join("") + '</div></section>';
+  return '<section class="detail-packages section-shell" aria-labelledby="detail-packages-title"><div class="package-intro"><div><span class="section-index">03</span><h2 id="detail-packages-title">' + esc(data.heading) + '</h2></div><p>' + esc(data.intro) + '</p></div><div class="detail-package-grid">' + data.cards.map((card, index) => '<article class="detail-package-card" data-package="' + (index + 1) + '"><p class="card-kicker">' + esc(card[0]) + '</p><p class="offer-price" data-package-price="quote">' + esc(data.price) + '</p><dl class="package-facts"><div><dt>' + esc(lang === "es" ? "Formato" : "Format") + '</dt><dd class="package-format">' + esc(card[1].replace(/^Formato: |^Format: /, "")) + '</dd></div><div><dt>' + esc(lang === "es" ? "Entrega" : "Deliverable") + '</dt><dd class="package-deliverable">' + esc(card[2].replace(/^Entrega: |^Deliverable: /, "")) + '</dd></div><div><dt>' + esc(lang === "es" ? "Destino" : "Destination") + '</dt><dd class="package-destination">' + esc(card[3].replace(/^Destino: |^Destination: /, "")) + '</dd></div><div><dt>' + esc(lang === "es" ? "No incluye" : "Not included") + '</dt><dd class="package-exclusions">' + esc(card[5].replace(/^No incluye: |^Not included: /, "")) + '</dd></div></dl><p class="feature-detail"><strong>' + esc(lang === "es" ? "Ejemplo:" : "Example:") + '</strong> ' + esc(card[4].replace(/^Ejemplo: |^Example: /, "")) + '</p><a class="button button-quiet package-cta" data-package-cta="' + (index + 1) + '" href="' + card[7] + '">' + esc(card[6]) + '</a></article>').join("") + '</div></section>';
 }
 
 const documents = {};
@@ -111,6 +111,13 @@ for (const lang of ["en", "es"]) {
       { title: name + " | Morrow & Mason", description });
   }
   documents[lang] = documentsForLanguage;
+}
+
+for (const [lang, localized] of Object.entries(documents)) {
+  for (const [file, html] of Object.entries(localized.legal)) {
+    const output = lang === "en" ? file : file.replace(/\.html$/, "-es.html");
+    await writeFile(new URL(output, dist), html);
+  }
 }
 
 const assets = {
