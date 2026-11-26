@@ -13,8 +13,8 @@ function shell(template, lang, activeView, main, metadata) {
   const c = COPY[lang];
   const isSpanish = lang === "es";
   const other = isSpanish ? ["en", "English"] : ["es", "Español"];
+  const legalPages = ["policies", "privacy", "terms", "cookies", "scope", "accessibility"];
   let navIndex = 0;
-  let footerIndex = 0;
   return template
     .replace('<html lang="en">', '<html lang="' + lang + '">')
     .replace('<body>', '<body class="no-js">')
@@ -33,16 +33,18 @@ function shell(template, lang, activeView, main, metadata) {
         }))
     .replace(/(<span class="sr-only">)Language/, (_, open) => open + esc(c.a11y.language))
     .replace('id="language-select" aria-label="Language"', 'id="language-select" aria-label="' + esc(c.a11y.language) + '"')
-    .replace('<option value="' + lang + '">', '<option value="' + lang + '" selected>')
+    .replace(/<option value="en"[^>]*>EN<\/option>/, '<option value="en"' + (lang === "en" ? " selected" : "") + '>EN</option>')
+    .replace(/<option value="es"[^>]*>ES<\/option>/, '<option value="es"' + (lang === "es" ? " selected" : "") + '>ES</option>')
+    .replace(/<a class="static-language"[^>]*>[^<]*<\/a>/g, "")
     .replace(/<\/select><\/label>/, '</select></label><a class="static-language" href="?lang=' + other[0] +
       '" lang="' + other[0] + '" hreflang="' + other[0] + '">' + other[1] + "</a>")
     .replace(/(<a class="button button-small button-dark"[^>]*>)[^<]*/, (_, open) => open + esc(c.nav.build))
     .replace("<span>Renovation studio</span>", "<span>" + (isSpanish ? "Estudio de renovación" : "Renovation studio") + "</span>")
     .replace("<p>Independent product preview. Real project delivery, vendors, contracts and policy activation require owner approval.</p>", "<p>" + esc(c.footer) + "</p>")
-    .replace(/<nav aria-label="Legal links">[\s\S]*?<\/nav>/, (nav) => nav
-      .replace('aria-label="Legal links"', 'aria-label="' + (isSpanish ? "Enlaces legales" : "Legal links") + '"')
-      .replace(/(<a\b[^>]*>)[^<]+/g, (_, open) => open + esc(legalLinkLabels[lang][footerIndex++]))
-      .replace('</nav>', '<a href="accessibility.html?lang=' + lang + '">' + esc(legalLinkLabels[lang][5]) + '</a></nav>'));
+    .replace(/<nav aria-label="Legal links">[\s\S]*?<\/nav>/, () =>
+      '<nav aria-label="' + (isSpanish ? "Enlaces legales" : "Legal links") + '">' +
+      legalPages.map((page, index) => '<a href="' + page + '.html?lang=' + lang + '">' +
+        esc(legalLinkLabels[lang][index]) + '</a>').join("") + '</nav>');
 }
 
 function scopePreview(lang) {

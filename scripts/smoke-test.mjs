@@ -38,6 +38,14 @@ for (const file of ["policies.html", "privacy.html", "terms.html", "cookies.html
   if (!body.includes("data-policy-page") || !js.includes("Pre-launch") || !js.includes("not effective")) throw new Error(`Legal gate missing in ${file}`);
   if (!/<main[^>]*data-policy-page="[^"]+">[\s\S]*<article/.test(body)) throw new Error(`Static legal fallback missing in ${file}`);
 }
+for (const file of ["policies.html", "privacy.html", "terms.html", "cookies.html", "scope.html", "accessibility.html", "policies-es.html", "privacy-es.html", "terms-es.html", "cookies-es.html", "scope-es.html", "accessibility-es.html"]) {
+  const body = readFileSync(new URL(file, root), "utf8");
+  if ((body.match(/class="static-language"/g) || []).length !== 1) throw new Error(`Language switch duplicated or missing in ${file}`);
+  if ((body.match(/<option value="en" selected>/g) || []).length + (body.match(/<option value="es" selected>/g) || []).length !== 1) throw new Error(`Language select has an invalid selected state in ${file}`);
+  if ((body.match(/<nav aria-label="(?:Legal links|Enlaces legales)">/g) || []).length !== 1) throw new Error(`Legal footer missing in ${file}`);
+  const footer = body.match(/<nav aria-label="(?:Legal links|Enlaces legales)">([\s\S]*?)<\/nav>/)?.[1] || "";
+  if ((footer.match(/<a /g) || []).length !== 6) throw new Error(`Legal footer links duplicated or missing in ${file}`);
+}
 for (const file of ["policies-es.html", "privacy-es.html", "terms-es.html", "cookies-es.html", "scope-es.html", "accessibility-es.html"]) {
   const body = readFileSync(new URL(file, root), "utf8");
   if (!body.includes('<html lang="es">') || !/<main[^>]*data-policy-page="[^"]+">[\s\S]*<article/.test(body)) throw new Error(`Spanish static legal fallback missing in ${file}`);
