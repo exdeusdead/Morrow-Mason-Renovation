@@ -83,9 +83,13 @@ test("home explains quote-first paths and preserves distinct destinations", asyn
     await expect(page.locator(".home-grid .offer-price")).toHaveCount(3);
     await expect(page.locator(".home-grid .offer-price").first()).toHaveText(price);
     await expect(page.locator("[data-package]")).toHaveCount(3);
+    await expect(page.locator(".package-scope")).toHaveCount(3);
     await expect(page.locator(".package-format")).toHaveCount(3);
     await expect(page.locator(".package-deliverable")).toHaveCount(3);
     await expect(page.locator(".package-destination")).toHaveCount(3);
+    await expect(page.locator(".package-tools")).toHaveCount(3);
+    await expect(page.locator(".package-exclusions")).toHaveCount(3);
+    await expect(page.locator(".package-acceptance")).toHaveCount(3);
     await expect(page.locator(".package-cta")).toHaveCount(3);
     const packageHrefs = await page.locator("[data-package]").evaluateAll((cards) => cards.map((card) => card.querySelector(".package-cta")?.getAttribute("href")));
     expect(new Set(packageHrefs).size).toBe(3);

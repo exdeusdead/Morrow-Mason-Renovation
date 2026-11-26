@@ -16,7 +16,7 @@ if (/\bun entrega\b|este vista previa|product vista previa|this vista previa/i.t
 for (const phrase of ["Morrow &amp; Mason", "Material Lab", "Scope Builder", "Request a quote", "Precio por cotizar", "aria-pressed", "aria-live"]) {
   if (!html.includes(phrase) && !js.includes(phrase)) throw new Error(`Missing required product signal: ${phrase}`);
 }
-for (const phrase of ["data-package", "package-format", "package-deliverable", "package-destination", "package-cta", "Not a quote", "No es una cotización"]) {
+for (const phrase of ["data-package", "package-scope", "package-format", "package-deliverable", "package-destination", "package-tools", "package-exclusions", "package-acceptance", "package-cta", "Not a quote", "No es una cotización"]) {
   if (!html.includes(phrase) && !js.includes(phrase) && !build.includes(phrase)) throw new Error(`Missing comparable package signal: ${phrase}`);
 }
 for (const phrase of ["openMenu", "Escape", "localDateString", "updateUrl", "currentFilter", "data-lang"]) {
